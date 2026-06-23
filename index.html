@@ -85,7 +85,8 @@ background-image:
 .tag-btn.selected{background:rgba(45,212,191,.1);border-color:var(--teal);color:var(--teal)}
 
 /* Breathing */
-.breathe-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:18px;padding:20px 0}
+.breathe-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:36px 0 24px}
+.breathe-circle-wrap{width:192px;height:192px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .breathe-circle{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,191,.25),rgba(45,212,191,.05));border:1px solid var(--teal-dim);transform:scale(1)}
 .breathe-circle.inhale{transform:scale(1.35);transition:transform 4s ease-in-out}
 .breathe-circle.hold{transform:scale(1.35);transition:transform .3s ease}
@@ -340,7 +341,7 @@ background-image:
     </div>
   </div>
   <div class="breathe-wrap">
-    <div class="breathe-circle" id="breathe-circle"></div>
+    <div class="breathe-circle-wrap"><div class="breathe-circle" id="breathe-circle"></div></div>
     <div class="breathe-phase" id="breathe-phase">Tekan mula untuk bernafas</div>
     <div class="breathe-zikir" id="breathe-zikir"></div>
   </div>
