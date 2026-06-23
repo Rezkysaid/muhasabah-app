@@ -260,9 +260,8 @@ background-image:
 </div>
 
 <script>
-// ── Config — TUKAR API KEY KAT SINI ──────────────────────
-const GEMINI_KEY = "LETAK_API_KEY_KAU_SINI";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+// ── Config ────────────────────────────────────────────────
+const PROXY_URL = "https://muhasabah-app.vercel.app/api/gemini";
 
 const MOOD_CONTEXT = {
   "Tenang":   "User rasa tenang. Refleksi mendalam — explore kenapa ketenangan tu terasa dan macam mana nak kekalkan.",
@@ -291,18 +290,15 @@ let sessions = [];
 try { sessions = JSON.parse(localStorage.getItem("mhsb_v3") || "[]"); } catch(e) {}
 function saveSessions() { try { localStorage.setItem("mhsb_v3", JSON.stringify(sessions)); } catch(e) {} }
 
-// ── Gemini API ────────────────────────────────────────────
+// ── Gemini API (via secure proxy) ──────────────────────────
 async function askGemini(prompt) {
-  const res = await fetch(GEMINI_URL, {
+  const res = await fetch(PROXY_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { maxOutputTokens: 1000, temperature: 0.8 }
-    })
+    body: JSON.stringify({ prompt })
   });
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
+  if (data.error) throw new Error(data.error.message || data.error);
   return data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 }
 
