@@ -50,13 +50,21 @@ background-image:
 .mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:24px}
 .mood-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:inherit;transition:all .18s}
 .mood-btn.selected{background:rgba(45,212,191,.08);border-color:var(--teal)}
-.mood-emoji{font-size:20px}
+.mood-emoji{width:22px;height:22px;color:var(--soft);transition:color .18s}
+.mood-emoji svg{width:100%;height:100%;display:block}
 .mood-label{font-size:9px;color:var(--muted);text-align:center}
 .mood-btn.selected .mood-label{color:var(--teal)}
+.mood-btn.selected .mood-emoji{color:var(--teal)}
+.chip-icon{width:13px;height:13px;display:inline-flex;vertical-align:-2px;margin-right:4px}
+.chip-icon svg{width:100%;height:100%;display:block}
+.card-icon{width:14px;height:14px;display:inline-flex;vertical-align:-2px;margin-right:6px;color:var(--gold)}
+.card-icon svg{width:100%;height:100%;display:block}
+.history-mood-icon{width:16px;height:16px;display:inline-flex;color:var(--soft)}
+.history-mood-icon svg{width:100%;height:100%;display:block}
 
 /* Cards */
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px}
-.card-title{font-size:12px;font-weight:500;color:var(--soft);margin-bottom:10px}
+.card-title{font-size:12px;font-weight:500;color:var(--soft);margin-bottom:10px;display:flex;align-items:center}
 
 /* Niat followup */
 .niat-text{font-size:14px;color:var(--text);font-style:italic;line-height:1.6}
@@ -74,7 +82,7 @@ background-image:
 .back-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:4px}
 .chat-title{font-size:16px;font-weight:500;color:var(--text)}
 .chat-sub{font-size:12px;color:var(--muted);margin-top:1px}
-.mood-chip{background:rgba(45,212,191,.1);border:1px solid var(--teal-dim);color:var(--teal);font-size:11px;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.mood-chip{display:flex;align-items:center;background:rgba(45,212,191,.1);border:1px solid var(--teal-dim);color:var(--teal);font-size:11px;padding:4px 10px;border-radius:20px;white-space:nowrap}
 
 /* Messages */
 .messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-bottom:12px}
@@ -127,13 +135,15 @@ background-image:
 
 /* Empty state */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;padding:40px;color:var(--muted);text-align:center}
-.empty-icon{font-size:40px;opacity:.5}
+.empty-icon{width:40px;height:40px;display:flex;color:var(--muted);opacity:.5}
+.empty-icon svg{width:100%;height:100%;display:block}
 
 /* Bottom nav */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--deep);border-top:1px solid var(--border);display:flex;z-index:100}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 8px;background:none;border:none;color:var(--muted);font-size:10px;font-family:inherit;cursor:pointer;transition:color .2s}
 .nav-btn.active{color:var(--teal)}
-.nav-icon{font-size:19px}
+.nav-icon{width:19px;height:19px;display:flex}
+.nav-icon svg{width:100%;height:100%;display:block}
 
 /* Animations */
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -175,14 +185,14 @@ background-image:
   </div>
   <div class="section-label">Keadaan hati sekarang</div>
   <div class="mood-grid">
-    <button class="mood-btn" data-mood="Tenang" data-emoji="🌙" onclick="selectMood(this)"><span class="mood-emoji">🌙</span><span class="mood-label">Tenang</span></button>
-    <button class="mood-btn" data-mood="Resah" data-emoji="🌊" onclick="selectMood(this)"><span class="mood-emoji">🌊</span><span class="mood-label">Resah</span></button>
-    <button class="mood-btn" data-mood="Kosong" data-emoji="🌫️" onclick="selectMood(this)"><span class="mood-emoji">🌫️</span><span class="mood-label">Kosong</span></button>
-    <button class="mood-btn" data-mood="Bersalah" data-emoji="🍂" onclick="selectMood(this)"><span class="mood-emoji">🍂</span><span class="mood-label">Bersalah</span></button>
-    <button class="mood-btn" data-mood="Keliru" data-emoji="🌪️" onclick="selectMood(this)"><span class="mood-emoji">🌪️</span><span class="mood-label">Keliru</span></button>
+    <button class="mood-btn" data-mood="Tenang" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Tenang</span></button>
+    <button class="mood-btn" data-mood="Resah" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Resah</span></button>
+    <button class="mood-btn" data-mood="Kosong" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Kosong</span></button>
+    <button class="mood-btn" data-mood="Bersalah" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Bersalah</span></button>
+    <button class="mood-btn" data-mood="Keliru" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Keliru</span></button>
   </div>
   <div id="followup-card" style="display:none" class="card">
-    <div class="card-title">🌙 Semalam kau niatkan...</div>
+    <div class="card-title"><span class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg></span>Semalam kau niatkan...</div>
     <div class="niat-text" id="yesterday-niat"></div>
     <div class="status-row">
       <button class="status-btn" onclick="updateNiatStatus('ya')">✓ Ya</button>
@@ -191,7 +201,7 @@ background-image:
     </div>
   </div>
   <div id="pattern-card" style="display:none" class="card">
-    <div class="card-title">📊 Pattern kau</div>
+    <div class="card-title"><span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 19V11"/><path d="M12 19V5"/><path d="M19 19v-7"/></svg></span>Pattern kau</div>
     <div id="pattern-content"></div>
   </div>
   <button class="btn-primary" id="start-btn" onclick="startMuhasabah()">Mulakan Muhasabah →</button>
@@ -240,8 +250,8 @@ background-image:
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="nav-btn active" id="nav-home" onclick="showScreen('home')"><span class="nav-icon">🌙</span>Hari Ini</button>
-  <button class="nav-btn" id="nav-history" onclick="showScreen('history')"><span class="nav-icon">📖</span>Sejarah</button>
+  <button class="nav-btn active" id="nav-home" onclick="showScreen('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg></span>Hari Ini</button>
+  <button class="nav-btn" id="nav-history" onclick="showScreen('history')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5c1.5-.8 3.2-1 4.5-.6 1 .3 2 .8 2.5 1.4v12.2c-.5-.6-1.5-1.1-2.5-1.4-1.3-.4-3-.2-4.5.6V5.5z"/><path d="M20 5.5c-1.5-.8-3.2-1-4.5-.6-1 .3-2 .8-2.5 1.4v12.2c.5-.6 1.5-1.1 2.5-1.4 1.3-.4 3-.2 4.5.6V5.5z"/></svg></span>Sejarah</button>
 </nav>
 
 </div>
@@ -259,9 +269,17 @@ const MOOD_CONTEXT = {
   "Keliru":   "User rasa keliru. Bantu fokus pada satu perkara dulu sebelum pergi lebih dalam.",
 };
 
+// ── Mood icons (minimalist SVG, no emoji) ──────────────────
+const MOOD_ICON = {
+  Tenang: `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg>`,
+  Resah: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 9.5c1.4-1.6 2.8-1.6 4.2 0s2.8 1.6 4.2 0 2.8-1.6 4.2 0 2.8 1.6 4.2 0"/><path d="M3 14.5c1.4-1.6 2.8-1.6 4.2 0s2.8 1.6 4.2 0 2.8-1.6 4.2 0 2.8 1.6 4.2 0" opacity=".5"/></svg>`,
+  Kosong: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7" stroke-dasharray="2.8 3.2"/></svg>`,
+  Bersalah: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M7 17c6-1 10-5 10-12 0 0-9-1-11 7-1.2 4 1 5 1 5z"/><path d="M6.5 17.5l3.5-4.5"/></svg>`,
+  Keliru: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5c4.1 0 7.5 3.4 7.5 7.5s-3.4 7.5-7.5 7.5-6-2.4-6-5.4 2.2-4.8 4.8-4.8 4 1.7 4 3.7-1.6 2.8-3.2 2.8"/></svg>`,
+};
+
 // ── State ─────────────────────────────────────────────────
 let selectedMood = null;
-let selectedEmoji = null;
 let chatHistory = [];
 let exchCount = 0;
 let isLoading = false;
@@ -305,6 +323,10 @@ function init() {
   const h = new Date().getHours();
   const greet = h < 12 ? "Selamat pagi" : h < 15 ? "Selamat tengahari" : h < 19 ? "Selamat petang" : "Selamat malam";
   document.getElementById("greeting-time").textContent = greet;
+  document.querySelectorAll(".mood-btn").forEach(b => {
+    const el = b.querySelector(".mood-emoji");
+    if (el) el.innerHTML = MOOD_ICON[b.dataset.mood] || "";
+  });
   updateStreak();
   checkFollowup();
   checkPatterns();
@@ -343,8 +365,7 @@ function checkPatterns() {
   recent.forEach(s => counts[s.mood] = (counts[s.mood]||0)+1);
   const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
   const lines = [];
-  const emojiMap = {Tenang:"🌙",Resah:"🌊",Kosong:"🌫️",Bersalah:"🍂",Keliru:"🌪️"};
-  if (top[1] >= 2) lines.push(`<div style="font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:8px">${emojiMap[top[0]]||""} ${top[1]} dari ${recent.length} sesi terakhir kau rasa ${top[0]}.</div>`);
+  if (top[1] >= 2) lines.push(`<div style="font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:8px;display:flex;align-items:center"><span class="card-icon">${MOOD_ICON[top[0]]||""}</span>${top[1]} dari ${recent.length} sesi terakhir kau rasa ${top[0]}.</div>`);
   const done = sessions.filter(s=>s.niatStatus==="ya").length;
   const tot = sessions.filter(s=>s.niat).length;
   if (tot > 0) {
@@ -362,8 +383,7 @@ function selectMood(btn) {
   document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("selected"));
   btn.classList.add("selected");
   selectedMood = btn.dataset.mood;
-  selectedEmoji = btn.dataset.emoji;
-  document.getElementById("greeting-mood").textContent = `${selectedEmoji} ${selectedMood.toLowerCase()}`;
+  document.getElementById("greeting-mood").textContent = selectedMood.toLowerCase();
   document.getElementById("start-btn").classList.add("active");
 }
 
@@ -387,12 +407,12 @@ async function startMuhasabah() {
   chatHistory = [];
   exchCount = 0;
   document.getElementById("messages").innerHTML = "";
-  document.getElementById("active-chip").textContent = `${selectedEmoji} ${selectedMood}`;
+  document.getElementById("active-chip").innerHTML = `<span class="chip-icon">${MOOD_ICON[selectedMood]||""}</span>${selectedMood}`;
   showScreen("chat");
 
   const prompt = `Kau adalah teman muhasabah — bukan ustaz, bukan therapist. Cara kau: tenang, lembut, manusiawi. Guna Bahasa Melayu natural.
 
-Mood user sekarang: ${selectedMood} ${selectedEmoji}
+Mood user sekarang: ${selectedMood}
 Context: ${MOOD_CONTEXT[selectedMood]}
 
 Bagi satu mesej pembuka yang acknowledge mood dia, dan tanya SATU soalan spesifik dan mendalam. Soalan kena kena dengan mood ${selectedMood}.
@@ -453,7 +473,7 @@ Bagi closing warm dan cadangkan satu niat kecil spesifik berdasarkan apa yang di
       }, 400);
     } else {
       const fullPrompt = `Kau teman muhasabah. Lembut, tenang, manusiawi. Bahasa Melayu natural.
-Mood asal: ${selectedMood} ${selectedEmoji}. Context: ${MOOD_CONTEXT[selectedMood]}
+Mood asal: ${selectedMood}. Context: ${MOOD_CONTEXT[selectedMood]}
 
 Conversation setakat ni:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
@@ -523,7 +543,6 @@ function saveNiat() {
     id: Date.now(),
     date: new Date().toISOString(),
     mood: selectedMood,
-    moodEmoji: selectedEmoji,
     niat,
     niatStatus: "pending"
   };
@@ -557,7 +576,7 @@ function renderHistory() {
   const list = document.getElementById("history-list");
   const sorted = [...sessions].reverse();
   if (!sorted.length) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">🌙</div><div style="font-size:14px;line-height:1.6">Belum ada sesi muhasabah.<br/>Mulakan perjalanan kau hari ni.</div></div>`;
+    list.innerHTML = `<div class="empty"><div class="empty-icon">${MOOD_ICON.Tenang}</div><div style="font-size:14px;line-height:1.6">Belum ada sesi muhasabah.<br/>Mulakan perjalanan kau hari ni.</div></div>`;
     return;
   }
   const statusMap = {
@@ -572,7 +591,7 @@ function renderHistory() {
     return `
       <div class="history-item">
         <div class="history-date">${d}</div>
-        <div class="history-mood"><span style="font-size:17px">${s.moodEmoji}</span><span style="font-size:13px;color:var(--soft)">${s.mood}</span></div>
+        <div class="history-mood"><span class="history-mood-icon">${MOOD_ICON[s.mood]||""}</span><span style="font-size:13px;color:var(--soft)">${s.mood}</span></div>
         ${s.niat
           ? `<div class="history-niat">${s.niat}</div><div class="history-status ${st.cls}">${st.lbl}</div>`
           : `<div style="font-size:12px;color:var(--muted);margin-top:4px">Tiada niat ditetapkan</div>`}
