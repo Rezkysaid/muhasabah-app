@@ -73,6 +73,26 @@ background-image:
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;animation:fadeUp .35s ease both}
 .card-title{font-size:12px;font-weight:500;color:var(--soft);margin-bottom:10px;display:flex;align-items:center}
 
+/* Anxiety hub cards */
+.anxiety-hub-card{cursor:pointer;transition:transform .15s,border-color .2s}
+.anxiety-hub-card:active{transform:scale(.97)}
+.anxiety-hub-card:hover{border-color:var(--teal-dim)}
+
+/* Tags */
+.tag-grid{display:flex;flex-wrap:wrap;gap:8px}
+.tag-btn{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s,transform .15s}
+.tag-btn:active{transform:scale(.93)}
+.tag-btn.selected{background:rgba(45,212,191,.1);border-color:var(--teal);color:var(--teal)}
+
+/* Breathing */
+.breathe-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:18px;padding:20px 0}
+.breathe-circle{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,191,.25),rgba(45,212,191,.05));border:1px solid var(--teal-dim);transform:scale(1)}
+.breathe-circle.inhale{transform:scale(1.35);transition:transform 4s ease-in-out}
+.breathe-circle.hold{transform:scale(1.35);transition:transform .3s ease}
+.breathe-circle.exhale{transform:scale(1);transition:transform 8s ease-in-out}
+.breathe-phase{font-size:16px;color:var(--text);font-weight:500;text-align:center}
+.breathe-zikir{font-size:14px;color:var(--gold);font-style:italic;text-align:center;min-height:20px}
+
 /* Niat followup */
 .niat-text{font-size:14px;color:var(--text);font-style:italic;line-height:1.6}
 .status-row{display:flex;gap:8px;margin-top:12px}
@@ -110,6 +130,7 @@ background-image:
 
 /* Ayah card */
 .ayah-card{background:rgba(201,168,76,.07);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin:8px 0 0 34px;max-width:85%;animation:fadeUp .35s ease .08s both}
+.ayah-card.standalone{margin:0 0 14px 0;max-width:100%}
 .ayah-label{display:flex;align-items:center;gap:6px;color:var(--gold);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
 .ayah-label svg{width:13px;height:13px;flex-shrink:0}
 .ayah-arabic{font-family:'Noto Naskh Arabic',Georgia,serif;font-weight:600;font-size:19px;color:var(--gold);text-align:right;line-height:1.9;margin-bottom:8px}
@@ -216,6 +237,11 @@ background-image:
     <button class="mood-btn" data-mood="Bersalah" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Bersalah</span></button>
     <button class="mood-btn" data-mood="Keliru" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Keliru</span></button>
   </div>
+  <div id="anxiety-hint" style="display:none" class="card">
+    <div class="card-title"><span class="card-icon" id="anxiety-hint-icon"></span>Rasa cemas sangat?</div>
+    <div style="font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:10px">Cuba teknik tenangkan hati dulu sebelum mula muhasabah.</div>
+    <button class="btn-primary active" style="margin-top:0" onclick="showScreen('anxiety')">Tenangkan Hati →</button>
+  </div>
   <div id="followup-card" style="display:none" class="card">
     <div class="card-title"><span class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg></span>Semalam kau niatkan...</div>
     <div class="niat-text" id="yesterday-niat"></div>
@@ -264,6 +290,95 @@ background-image:
   <button class="btn-primary active" id="niat-save-btn" onclick="saveNiat()">Simpan Niat →</button>
 </div>
 
+<!-- ANXIETY HUB -->
+<div class="screen" id="screen-anxiety">
+  <div class="chat-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div>
+      <div class="chat-title">Tenangkan Hati</div>
+      <div class="chat-sub">Pilih apa yang kau perlukan sekarang</div>
+    </div>
+  </div>
+  <div class="card anxiety-hub-card" onclick="showScreen('breathing')">
+    <div class="card-title"><span class="card-icon" id="hub-icon-wind"></span>Nafas & Zikir</div>
+    <div style="font-size:13px;color:var(--soft);line-height:1.6">Teknik pernafasan 4-7-8 sambil zikir, untuk tenangkan badan dan hati.</div>
+  </div>
+  <div class="card anxiety-hub-card" onclick="showScreen('ayat-tenang')">
+    <div class="card-title"><span class="card-icon" id="hub-icon-ayat"></span>Ayat Penenang</div>
+    <div style="font-size:13px;color:var(--soft);line-height:1.6">Ayat-ayat Al-Quran yang menenangkan hati yang gelisah.</div>
+  </div>
+  <div class="card anxiety-hub-card" onclick="showScreen('doa-cemas')">
+    <div class="card-title"><span class="card-icon" id="hub-icon-doa"></span>Doa Cemas</div>
+    <div style="font-size:13px;color:var(--soft);line-height:1.6">Doa-doa pendek daripada Nabi untuk hati yang risau.</div>
+  </div>
+  <div class="card anxiety-hub-card" onclick="startAnxietyChat()">
+    <div class="card-title"><span class="card-icon" id="hub-icon-chat"></span>Luah dengan AI</div>
+    <div style="font-size:13px;color:var(--soft);line-height:1.6">Cakap apa yang kau rasa, biar didengar dulu.</div>
+  </div>
+  <div class="section-label" style="margin-top:8px">Apa buat kau cemas?</div>
+  <div class="card">
+    <div class="tag-grid" id="anxiety-tags">
+      <button class="tag-btn" data-tag="Kerja" onclick="toggleTag(this)">Kerja</button>
+      <button class="tag-btn" data-tag="Duit" onclick="toggleTag(this)">Duit</button>
+      <button class="tag-btn" data-tag="Hubungan" onclick="toggleTag(this)">Hubungan</button>
+      <button class="tag-btn" data-tag="Kesihatan" onclick="toggleTag(this)">Kesihatan</button>
+      <button class="tag-btn" data-tag="Masa depan" onclick="toggleTag(this)">Masa depan</button>
+      <button class="tag-btn" data-tag="Lain-lain" onclick="toggleTag(this)">Lain-lain</button>
+    </div>
+    <textarea class="niat-input" id="anxiety-note" rows="3" placeholder="(Pilihan) Cerita ringkas apa yang berlaku..." style="margin-top:12px"></textarea>
+    <button class="btn-primary active" id="anxiety-log-btn" onclick="saveAnxietyLog()">Simpan & Teruskan</button>
+  </div>
+</div>
+
+<!-- BREATHING -->
+<div class="screen" id="screen-breathing">
+  <div class="chat-header">
+    <button class="back-btn" onclick="stopBreathing();showScreen('anxiety')">←</button>
+    <div>
+      <div class="chat-title">Nafas & Zikir</div>
+      <div class="chat-sub">Teknik 4-7-8</div>
+    </div>
+  </div>
+  <div class="breathe-wrap">
+    <div class="breathe-circle" id="breathe-circle"></div>
+    <div class="breathe-phase" id="breathe-phase">Tekan mula untuk bernafas</div>
+    <div class="breathe-zikir" id="breathe-zikir"></div>
+  </div>
+  <button class="btn-primary active" id="breathe-toggle-btn" onclick="toggleBreathing()">Mula →</button>
+  <div id="breathe-done" style="display:none">
+    <div class="section-label" style="margin-top:20px;text-align:center">Rasa lebih tenang?</div>
+    <div class="status-row">
+      <button class="status-btn" onclick="finishBreathing('ya')">🙂 Ya</button>
+      <button class="status-btn" onclick="finishBreathing('partial')">😐 Sikit</button>
+      <button class="status-btn" onclick="finishBreathing('no')">😣 Tak juga</button>
+    </div>
+  </div>
+</div>
+
+<!-- AYAT TENANG -->
+<div class="screen" id="screen-ayat-tenang">
+  <div class="chat-header">
+    <button class="back-btn" onclick="showScreen('anxiety')">←</button>
+    <div>
+      <div class="chat-title">Ayat Penenang</div>
+      <div class="chat-sub">Renungi perlahan-lahan</div>
+    </div>
+  </div>
+  <div id="ayat-tenang-list"></div>
+</div>
+
+<!-- DOA CEMAS -->
+<div class="screen" id="screen-doa-cemas">
+  <div class="chat-header">
+    <button class="back-btn" onclick="showScreen('anxiety')">←</button>
+    <div>
+      <div class="chat-title">Doa Cemas</div>
+      <div class="chat-sub">Doa Nabi ketika risau</div>
+    </div>
+  </div>
+  <div id="doa-cemas-list"></div>
+</div>
+
 <!-- HISTORY -->
 <div class="screen" id="screen-history">
   <div style="padding:24px 0 16px;position:relative;z-index:1">
@@ -276,6 +391,7 @@ background-image:
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav" id="bottom-nav">
   <button class="nav-btn active" id="nav-home" onclick="showScreen('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg></span>Hari Ini</button>
+  <button class="nav-btn" id="nav-anxiety" onclick="showScreen('anxiety')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h11.5a2.5 2.5 0 100-5"/><path d="M3 13.5h15a2.5 2.5 0 110 5H10"/><path d="M3 19h7.5"/></svg></span>Tenang</button>
   <button class="nav-btn" id="nav-history" onclick="showScreen('history')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5c1.5-.8 3.2-1 4.5-.6 1 .3 2 .8 2.5 1.4v12.2c-.5-.6-1.5-1.1-2.5-1.4-1.3-.4-3-.2-4.5.6V5.5z"/><path d="M20 5.5c-1.5-.8-3.2-1-4.5-.6-1 .3-2 .8-2.5 1.4v12.2c.5-.6 1.5-1.1 2.5-1.4 1.3-.4 3-.2 4.5.6V5.5z"/></svg></span>Sejarah</button>
 </nav>
 
@@ -291,6 +407,7 @@ const MOOD_CONTEXT = {
   "Kosong":   "User rasa kosong — mungkin disconnection dari diri atau dari Allah. Pendekatan perlahan, jangan overwhelm.",
   "Bersalah": "User rasa bersalah. Kenalpasti sama ada guilt tu healthy atau toxic. Tanya dengan lembut.",
   "Keliru":   "User rasa keliru. Bantu fokus pada satu perkara dulu sebelum pergi lebih dalam.",
+  "Cemas":    "User rasa cemas/anxious teruk. Jadi pendengar yang tenang dulu — jangan terus bagi solution. Validate perasaan dia, tanya apa yang buat dia rasa macam ni sekarang, lembut dan perlahan.",
 };
 
 // ── Mood icons (minimalist SVG, no emoji) ──────────────────
@@ -300,10 +417,14 @@ const MOOD_ICON = {
   Kosong: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7" stroke-dasharray="2.8 3.2"/></svg>`,
   Bersalah: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M7 17c6-1 10-5 10-12 0 0-9-1-11 7-1.2 4 1 5 1 5z"/><path d="M6.5 17.5l3.5-4.5"/></svg>`,
   Keliru: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5c4.1 0 7.5 3.4 7.5 7.5s-3.4 7.5-7.5 7.5-6-2.4-6-5.4 2.2-4.8 4.8-4.8 4 1.7 4 3.7-1.6 2.8-3.2 2.8"/></svg>`,
+  Cemas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 12h3l2-4.5 3 9 2-6.5 1.5 2h6.5"/></svg>`,
 };
 
 const BRAND_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg>`;
 const AYAH_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5c1.5-.8 3.2-1 4.5-.6 1 .3 2 .8 2.5 1.4v12.2c-.5-.6-1.5-1.1-2.5-1.4-1.3-.4-3-.2-4.5.6V5.5z"/><path d="M20 5.5c-1.5-.8-3.2-1-4.5-.6-1 .3-2 .8-2.5 1.4v12.2c.5-.6 1.5-1.1 2.5-1.4 1.3-.4 3-.2 4.5.6V5.5z"/></svg>`;
+const WIND_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h11.5a2.5 2.5 0 100-5"/><path d="M3 13.5h15a2.5 2.5 0 110 5H10"/><path d="M3 19h7.5"/></svg>`;
+const DUA_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M7 20c0-5.5 1.8-9 1.8-13a3.2 3.2 0 116.4 0c0 4 1.8 7.5 1.8 13"/><path d="M6 20h12"/></svg>`;
+const CHAT_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 19l1.2-3.6A8 8 0 1112 20a8.4 8.4 0 01-4-1L4 19z"/></svg>`;
 
 // ── State ─────────────────────────────────────────────────
 let selectedMood = null;
@@ -311,6 +432,7 @@ let chatHistory = [];
 let exchCount = 0;
 let isLoading = false;
 let sessions = [];
+let selectedTags = [];
 
 try { sessions = JSON.parse(localStorage.getItem("mhsb_v3") || "[]"); } catch(e) {}
 function saveSessions() { try { localStorage.setItem("mhsb_v3", JSON.stringify(sessions)); } catch(e) {} }
@@ -342,6 +464,36 @@ function parseResponse(raw) {
   return { text, ayah };
 }
 
+// ── Curated content ─────────────────────────────────────────
+const AYAT_TENANG = [
+  { arabic:"الَّذِينَ آمَنُوا وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ اللَّهِ ۗ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ", translation:"Iaitu orang-orang yang beriman dan tenang tenteram hati mereka dengan mengingati Allah. Ketahuilah, dengan mengingati Allah, tenang tenteramlah hati.", source:"Ar-Ra'd: 28" },
+  { arabic:"لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا", translation:"Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya.", source:"Al-Baqarah: 286" },
+  { arabic:"وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", translation:"Dan sesiapa yang bertaqwa kepada Allah, nescaya Allah akan mengadakan baginya jalan keluar.", source:"At-Talaq: 2" },
+  { arabic:"وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ", translation:"Dan janganlah kamu berputus asa daripada rahmat Allah.", source:"Yusuf: 87" },
+  { arabic:"حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ", translation:"Cukuplah Allah menjadi penolong kami, dan Dialah sebaik-baik pemberi pertolongan.", source:"Ali 'Imran: 173" },
+];
+const DOA_CEMAS = [
+  { arabic:"لَا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ", translation:"Tiada Tuhan melainkan Engkau, Maha Suci Engkau, sesungguhnya aku adalah dari golongan orang yang menzalimi diri sendiri.", source:"Doa Nabi Yunus — Al-Anbiya: 87" },
+  { arabic:"اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَالْعَجْزِ وَالْكَسَلِ وَالْجُبْنِ وَالْبُخْلِ", translation:"Ya Allah, sesungguhnya aku berlindung kepada-Mu daripada rasa gelisah dan sedih, daripada lemah dan malas, daripada sifat pengecut dan bakhil.", source:"Riwayat Abu Daud" },
+  { arabic:"رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي", translation:"Wahai Tuhanku, lapangkanlah dadaku, dan permudahkanlah urusanku.", source:"Doa Nabi Musa — Taha: 25-26" },
+];
+const ZIKIR_LIST = ["Astaghfirullah", "Lā ḥawla walā quwwata illā billāh", "Hasbunallahu wa ni'mal wakīl", "Subhanallah"];
+const PHASES = [
+  { name:"inhale", label:"Tarik nafas perlahan...", dur:4000 },
+  { name:"hold",   label:"Tahan...",                dur:7000 },
+  { name:"exhale", label:"Hembus perlahan-lahan...",dur:8000 },
+];
+
+function renderStaticAyahList(containerId, data) {
+  document.getElementById(containerId).innerHTML = data.map(a => `
+    <div class="ayah-card standalone">
+      <div class="ayah-label">${AYAH_ICON}Renungan</div>
+      <div class="ayah-arabic">${a.arabic}</div>
+      <div class="ayah-translation">"${a.translation}"</div>
+      <div class="ayah-source">— ${a.source}</div>
+    </div>`).join("");
+}
+
 // ── Init ──────────────────────────────────────────────────
 function init() {
   const h = new Date().getHours();
@@ -351,6 +503,13 @@ function init() {
     const el = b.querySelector(".mood-emoji");
     if (el) el.innerHTML = MOOD_ICON[b.dataset.mood] || "";
   });
+  document.getElementById("anxiety-hint-icon").innerHTML = WIND_ICON;
+  document.getElementById("hub-icon-wind").innerHTML = WIND_ICON;
+  document.getElementById("hub-icon-ayat").innerHTML = AYAH_ICON;
+  document.getElementById("hub-icon-doa").innerHTML = DUA_ICON;
+  document.getElementById("hub-icon-chat").innerHTML = CHAT_ICON;
+  renderStaticAyahList("ayat-tenang-list", AYAT_TENANG);
+  renderStaticAyahList("doa-cemas-list", DOA_CEMAS);
   updateStreak();
   checkFollowup();
   checkPatterns();
@@ -373,9 +532,9 @@ function updateStreak() {
 }
 
 function checkFollowup() {
-  if (!sessions.length) return;
-  const last = sessions[sessions.length-1];
-  if (!last.niat) return;
+  const niatSessions = sessions.filter(s => s.niat);
+  if (!niatSessions.length) return;
+  const last = niatSessions[niatSessions.length-1];
   if (new Date(last.date).toDateString() === new Date().toDateString()) return;
   if (last.niatStatus !== "pending") return;
   document.getElementById("yesterday-niat").textContent = last.niat;
@@ -386,10 +545,10 @@ function checkPatterns() {
   if (sessions.length < 3) return;
   const recent = sessions.slice(-5);
   const counts = {};
-  recent.forEach(s => counts[s.mood] = (counts[s.mood]||0)+1);
+  recent.forEach(s => { if (s.mood) counts[s.mood] = (counts[s.mood]||0)+1; });
   const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
   const lines = [];
-  if (top[1] >= 2) lines.push(`<div style="font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:8px;display:flex;align-items:center"><span class="card-icon">${MOOD_ICON[top[0]]||""}</span>${top[1]} dari ${recent.length} sesi terakhir kau rasa ${top[0]}.</div>`);
+  if (top && top[1] >= 2) lines.push(`<div style="font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:8px;display:flex;align-items:center"><span class="card-icon">${MOOD_ICON[top[0]]||""}</span>${top[1]} dari ${recent.length} sesi terakhir kau rasa ${top[0]}.</div>`);
   const done = sessions.filter(s=>s.niatStatus==="ya").length;
   const tot = sessions.filter(s=>s.niat).length;
   if (tot > 0) {
@@ -409,6 +568,7 @@ function selectMood(btn) {
   selectedMood = btn.dataset.mood;
   document.getElementById("greeting-mood").textContent = selectedMood.toLowerCase();
   document.getElementById("start-btn").classList.add("active");
+  document.getElementById("anxiety-hint").style.display = (selectedMood === "Resah") ? "block" : "none";
 }
 
 // ── Navigation ────────────────────────────────────────────
@@ -419,7 +579,7 @@ function showScreen(name) {
   const nav = document.getElementById("nav-"+name);
   if (nav) nav.classList.add("active");
   const app = document.querySelector(".app");
-  const showNav = (name === "home" || name === "history");
+  const showNav = (name === "home" || name === "history" || name === "anxiety");
   app.style.paddingBottom = showNav ? "68px" : "0";
   document.getElementById("bottom-nav").style.display = showNav ? "flex" : "none";
   if (name === "history") renderHistory();
@@ -463,6 +623,12 @@ Balas 3-5 ayat sahaja. Jangan ceramah.`;
     removeTyping();
     addMessage("ai", "Ralat: " + e.message);
   }
+}
+
+function startAnxietyChat() {
+  selectedMood = "Cemas";
+  document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("selected"));
+  startMuhasabah();
 }
 
 async function sendMessage() {
@@ -595,11 +761,87 @@ function saveNiat() {
 }
 
 function updateNiatStatus(status) {
-  if (!sessions.length) return;
-  sessions[sessions.length-1].niatStatus = status;
+  for (let i = sessions.length-1; i >= 0; i--) {
+    if (sessions[i].niat) { sessions[i].niatStatus = status; break; }
+  }
   saveSessions();
   document.getElementById("followup-card").style.display = "none";
   checkPatterns();
+}
+
+// ── Anxiety: quick log ──────────────────────────────────────
+function toggleTag(btn) {
+  btn.classList.toggle("selected");
+  const t = btn.dataset.tag;
+  if (selectedTags.includes(t)) selectedTags = selectedTags.filter(x => x !== t);
+  else selectedTags.push(t);
+}
+
+function saveAnxietyLog() {
+  const note = document.getElementById("anxiety-note").value.trim();
+  if (selectedTags.length || note) {
+    sessions.push({ id: Date.now(), date: new Date().toISOString(), type: "anxiety", tags: [...selectedTags], note });
+    saveSessions();
+  }
+  selectedTags = [];
+  document.querySelectorAll("#anxiety-tags .tag-btn").forEach(b => b.classList.remove("selected"));
+  document.getElementById("anxiety-note").value = "";
+  showScreen("breathing");
+}
+
+// ── Anxiety: breathing exercise ──────────────────────────────
+let breathing = false;
+let breatheTimer = null;
+let breatheCycle = 0;
+
+function toggleBreathing() {
+  if (breathing) { stopBreathing(); return; }
+  breathing = true;
+  breatheCycle = 0;
+  document.getElementById("breathe-toggle-btn").textContent = "Henti";
+  document.getElementById("breathe-done").style.display = "none";
+  runBreathePhase(0);
+}
+
+function runBreathePhase(idx) {
+  if (!breathing) return;
+  const phase = PHASES[idx];
+  document.getElementById("breathe-circle").className = "breathe-circle " + phase.name;
+  document.getElementById("breathe-phase").textContent = phase.label;
+  if (idx === 0) document.getElementById("breathe-zikir").textContent = ZIKIR_LIST[breatheCycle % ZIKIR_LIST.length];
+  breatheTimer = setTimeout(() => {
+    const next = (idx + 1) % PHASES.length;
+    if (next === 0) {
+      breatheCycle++;
+      if (breatheCycle >= 4) { completeBreathing(); return; }
+    }
+    runBreathePhase(next);
+  }, phase.dur);
+}
+
+function stopBreathing() {
+  breathing = false;
+  if (breatheTimer) clearTimeout(breatheTimer);
+  document.getElementById("breathe-toggle-btn").textContent = "Mula →";
+  document.getElementById("breathe-phase").textContent = "Tekan mula untuk bernafas";
+  document.getElementById("breathe-zikir").textContent = "";
+  document.getElementById("breathe-circle").className = "breathe-circle";
+}
+
+function completeBreathing() {
+  breathing = false;
+  document.getElementById("breathe-toggle-btn").textContent = "Mula →";
+  document.getElementById("breathe-phase").textContent = "Selesai. Baik.";
+  document.getElementById("breathe-zikir").textContent = "";
+  document.getElementById("breathe-circle").className = "breathe-circle";
+  document.getElementById("breathe-done").style.display = "block";
+}
+
+function finishBreathing(feeling) {
+  sessions.push({ id: Date.now(), date: new Date().toISOString(), type: "breathing", feeling });
+  saveSessions();
+  document.getElementById("breathe-done").style.display = "none";
+  showScreen("anxiety");
 }
 
 // ── History ───────────────────────────────────────────────
@@ -616,10 +858,28 @@ function renderHistory() {
     no:      { cls:"s-no",      lbl:"✗ Belum" },
     pending: { cls:"s-pending", lbl:"⏳ Belum follow up" },
   };
+  const feelMap = { ya:"Rasa lebih tenang", partial:"Rasa tenang sikit", no:"Belum banyak berubah" };
   list.innerHTML = sorted.map((s, i) => {
-    const d = new Date(s.date).toLocaleDateString("ms-MY",{weekday:"long",day:"numeric",month:"long"});
-    const st = statusMap[s.niatStatus] || statusMap.pending;
     const delay = Math.min(i, 8) * 0.05;
+    const d = new Date(s.date).toLocaleDateString("ms-MY",{weekday:"long",day:"numeric",month:"long"});
+    if (s.type === "anxiety") {
+      return `
+        <div class="history-item" style="animation-delay:${delay}s">
+          <div class="history-date">${d}</div>
+          <div class="history-mood"><span style="font-size:16px">🌬️</span><span style="font-size:13px;color:var(--soft)">Sesi Tenangkan Hati</span></div>
+          ${s.tags && s.tags.length ? `<div style="font-size:12px;color:var(--muted);margin-top:4px">${s.tags.join(" · ")}</div>` : ""}
+          ${s.note ? `<div class="history-niat">${s.note}</div>` : ""}
+        </div>`;
+    }
+    if (s.type === "breathing") {
+      return `
+        <div class="history-item" style="animation-delay:${delay}s">
+          <div class="history-date">${d}</div>
+          <div class="history-mood"><span style="font-size:16px">🌬️</span><span style="font-size:13px;color:var(--soft)">Latihan Nafas 4-7-8</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">${feelMap[s.feeling]||""}</div>
+        </div>`;
+    }
+    const st = statusMap[s.niatStatus] || statusMap.pending;
     return `
       <div class="history-item" style="animation-delay:${delay}s">
         <div class="history-date">${d}</div>
