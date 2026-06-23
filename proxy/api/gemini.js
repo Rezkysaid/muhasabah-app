@@ -1,15 +1,30 @@
-const ALLOWED_ORIGIN = "https://rezkysaid.github.io";
+const ALLOWED_ORIGINS = [
+  "https://rezkysaid.github.io",
+];
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  try {
+    const { hostname, protocol } = new URL(origin);
+    return protocol === "https:" && hostname.endsWith(".vercel.app");
+  } catch {
+    return false;
+  }
+}
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+  const origin = req.headers.origin || "";
+  if (isAllowedOrigin(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") { res.status(200).end(); return; }
   if (req.method !== "POST") { res.status(405).json({ error: "Method not allowed" }); return; }
 
-  const origin = req.headers.origin || "";
-  if (origin !== ALLOWED_ORIGIN) { res.status(403).json({ error: "Forbidden origin" }); return; }
+  if (!isAllowedOrigin(origin)) { res.status(403).json({ error: "Forbidden origin" }); return; }
 
   const { prompt } = req.body || {};
   if (!prompt) { res.status(400).json({ error: "Missing prompt" }); return; }
