@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Muhasabah AI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --night:#0d1117;--deep:#141b25;--card:#1a2332;--border:#1e2d42;
+  --teal:#2dd4bf;--teal-dim:#1a7a70;--gold:#c9a84c;--gold-dim:#7a6030;
+  --text:#e2e8f0;--muted:#64748b;--soft:#94a3b8;--danger:#f87171;
+}
+body{background:var(--night);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;display:flex;justify-content:center}
+.app{width:100%;max-width:480px;min-height:100vh;display:flex;flex-direction:column;position:relative;padding-bottom:68px}
+
+/* Stars */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+background-image:
+  radial-gradient(1px 1px at 15% 12%,rgba(255,255,255,.15) 0%,transparent 100%),
+  radial-gradient(1px 1px at 80% 22%,rgba(255,255,255,.10) 0%,transparent 100%),
+  radial-gradient(1px 1px at 45% 55%,rgba(255,255,255,.08) 0%,transparent 100%),
+  radial-gradient(1px 1px at 8% 70%,rgba(255,255,255,.12) 0%,transparent 100%),
+  radial-gradient(1px 1px at 88% 78%,rgba(255,255,255,.09) 0%,transparent 100%),
+  radial-gradient(1px 1px at 60% 88%,rgba(255,255,255,.07) 0%,transparent 100%);}
+
+/* Screens */
+.screen{display:none;flex-direction:column;flex:1;padding:0 24px;position:relative;z-index:1}
+.screen.active{display:flex}
+
+/* Header */
+.header{padding:28px 0 14px;display:flex;align-items:center;justify-content:space-between}
+.logo-arabic{font-family:Georgia,serif;font-size:22px;color:var(--gold);line-height:1}
+.logo-latin{font-size:10px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:3px}
+.streak{display:flex;align-items:center;gap:6px;background:rgba(201,168,76,.1);border:1px solid var(--gold-dim);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--gold)}
+
+/* Greeting */
+.greeting{padding-bottom:24px}
+.greeting-time{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.greeting-main{font-size:22px;font-weight:300;color:var(--text);line-height:1.35}
+.greeting-main span{color:var(--teal);font-weight:500}
+
+/* Section label */
+.section-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+
+/* Mood grid */
+.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:24px}
+.mood-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:inherit;transition:all .18s}
+.mood-btn.selected{background:rgba(45,212,191,.08);border-color:var(--teal)}
+.mood-emoji{font-size:20px}
+.mood-label{font-size:9px;color:var(--muted);text-align:center}
+.mood-btn.selected .mood-label{color:var(--teal)}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:500;color:var(--soft);margin-bottom:10px}
+
+/* Niat followup */
+.niat-text{font-size:14px;color:var(--text);font-style:italic;line-height:1.6}
+.status-row{display:flex;gap:8px;margin-top:12px}
+.status-btn{flex:1;padding:7px 4px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s}
+.status-btn:hover{border-color:var(--teal);color:var(--teal)}
+
+/* CTA */
+.btn-primary{width:100%;padding:15px;margin-top:8px;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--muted);font-size:15px;font-weight:500;cursor:not-allowed;font-family:inherit;transition:all .2s}
+.btn-primary.active{background:linear-gradient(135deg,var(--teal-dim),rgba(45,212,191,.28));border-color:var(--teal);color:var(--teal);cursor:pointer}
+.btn-primary.saved{background:rgba(45,212,191,.18);border-color:var(--teal);color:var(--teal);cursor:default}
+
+/* Chat header */
+.chat-header{padding:18px 0 14px;border-bottom:1px solid var(--border);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.back-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:4px}
+.chat-title{font-size:16px;font-weight:500;color:var(--text)}
+.chat-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.mood-chip{background:rgba(45,212,191,.1);border:1px solid var(--teal-dim);color:var(--teal);font-size:11px;padding:4px 10px;border-radius:20px;white-space:nowrap}
+
+/* Messages */
+.messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-bottom:12px}
+.msg{display:flex;flex-direction:column;animation:fadeUp .25s ease}
+.msg.ai{align-items:flex-start}
+.msg.user{align-items:flex-end}
+.bubble{max-width:85%;padding:11px 15px;font-size:14px;line-height:1.65;color:var(--text)}
+.msg.ai .bubble{background:var(--card);border:1px solid var(--border);border-radius:16px 16px 16px 4px}
+.msg.user .bubble{background:rgba(45,212,191,.12);border:1px solid var(--teal-dim);border-radius:16px 16px 4px 16px}
+.msg-time{font-size:10px;color:var(--muted);margin-top:3px;padding:0 4px}
+.msg.user .msg-time{text-align:right}
+
+/* Ayah card */
+.ayah-card{background:rgba(201,168,76,.07);border:1px solid var(--gold-dim);border-radius:12px;padding:14px 16px;margin:6px 0;max-width:85%}
+.ayah-arabic{font-family:Georgia,serif;font-size:18px;color:var(--gold);text-align:right;line-height:1.8;margin-bottom:8px}
+.ayah-translation{font-size:13px;color:var(--soft);font-style:italic;line-height:1.6}
+.ayah-source{font-size:11px;color:var(--muted);margin-top:6px}
+
+/* Typing */
+.typing{display:flex;gap:4px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:16px 16px 16px 4px;width:fit-content}
+.dot{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:bounce 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+
+/* Input */
+.input-area{padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end}
+.input-area textarea{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-size:14px;font-family:inherit;resize:none;min-height:44px;line-height:1.5;outline:none;transition:border-color .2s}
+.input-area textarea:focus{border-color:var(--teal-dim)}
+.input-area textarea::placeholder{color:var(--muted)}
+.send-btn{width:44px;height:44px;background:var(--teal-dim);border:none;border-radius:12px;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.send-btn:disabled{background:var(--border);cursor:not-allowed}
+
+/* Niat screen */
+.niat-intro{font-size:14px;color:var(--soft);line-height:1.7;margin-bottom:22px}
+.niat-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;color:var(--text);font-size:14px;font-family:inherit;resize:none;line-height:1.6;outline:none;margin-bottom:8px;transition:border-color .2s}
+.niat-input:focus{border-color:var(--teal-dim)}
+.niat-input::placeholder{color:var(--muted);font-style:italic}
+.niat-hint{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+/* History */
+.history-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.history-date{font-size:11px;color:var(--muted);margin-bottom:5px}
+.history-mood{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.history-niat{font-size:13px;color:var(--text);font-style:italic;line-height:1.5;border-left:2px solid var(--teal-dim);padding-left:10px;margin-top:6px}
+.history-status{display:inline-flex;font-size:11px;margin-top:8px;padding:3px 8px;border-radius:10px}
+.s-ya{background:rgba(45,212,191,.1);color:var(--teal)}
+.s-partial{background:rgba(201,168,76,.1);color:var(--gold)}
+.s-no{background:rgba(248,113,113,.1);color:var(--danger)}
+.s-pending{background:rgba(100,116,139,.1);color:var(--muted)}
+
+/* Empty state */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;padding:40px;color:var(--muted);text-align:center}
+.empty-icon{font-size:40px;opacity:.5}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--deep);border-top:1px solid var(--border);display:flex;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 8px;background:none;border:none;color:var(--muted);font-size:10px;font-family:inherit;cursor:pointer;transition:color .2s}
+.nav-btn.active{color:var(--teal)}
+.nav-icon{font-size:19px}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="header">
+    <div>
+      <div class="logo-arabic">محاسبة</div>
+      <div class="logo-latin">Muhasabah AI</div>
+    </div>
+    <div class="streak">🔥 <span id="streak-count">0</span> hari</div>
+  </div>
+  <div class="greeting">
+    <div class="greeting-time" id="greeting-time">Selamat pagi</div>
+    <div class="greeting-main">Hati kau hari ni <span id="greeting-mood">macam mana?</span></div>
+  </div>
+  <div class="section-label">Keadaan hati sekarang</div>
+  <div class="mood-grid">
+    <button class="mood-btn" data-mood="Tenang" data-emoji="🌙" onclick="selectMood(this)"><span class="mood-emoji">🌙</span><span class="mood-label">Tenang</span></button>
+    <button class="mood-btn" data-mood="Resah" data-emoji="🌊" onclick="selectMood(this)"><span class="mood-emoji">🌊</span><span class="mood-label">Resah</span></button>
+    <button class="mood-btn" data-mood="Kosong" data-emoji="🌫️" onclick="selectMood(this)"><span class="mood-emoji">🌫️</span><span class="mood-label">Kosong</span></button>
+    <button class="mood-btn" data-mood="Bersalah" data-emoji="🍂" onclick="selectMood(this)"><span class="mood-emoji">🍂</span><span class="mood-label">Bersalah</span></button>
+    <button class="mood-btn" data-mood="Keliru" data-emoji="🌪️" onclick="selectMood(this)"><span class="mood-emoji">🌪️</span><span class="mood-label">Keliru</span></button>
+  </div>
+  <div id="followup-card" style="display:none" class="card">
+    <div class="card-title">🌙 Semalam kau niatkan...</div>
+    <div class="niat-text" id="yesterday-niat"></div>
+    <div class="status-row">
+      <button class="status-btn" onclick="updateNiatStatus('ya')">✓ Ya</button>
+      <button class="status-btn" onclick="updateNiatStatus('partial')">◑ Separuh</button>
+      <button class="status-btn" onclick="updateNiatStatus('no')">✗ Belum</button>
+    </div>
+  </div>
+  <div id="pattern-card" style="display:none" class="card">
+    <div class="card-title">📊 Pattern kau</div>
+    <div id="pattern-content"></div>
+  </div>
+  <button class="btn-primary" id="start-btn" onclick="startMuhasabah()">Mulakan Muhasabah →</button>
+</div>
+
+<!-- CHAT -->
+<div class="screen" id="screen-chat">
+  <div class="chat-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div style="flex:1">
+      <div class="chat-title">Muhasabah</div>
+      <div class="chat-sub">Refleksi hari ini</div>
+    </div>
+    <div class="mood-chip" id="active-chip"></div>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <textarea id="user-input" placeholder="Tulis apa yang terasa..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="send-btn" onclick="sendMessage()">↑</button>
+  </div>
+</div>
+
+<!-- NIAT -->
+<div class="screen" id="screen-niat">
+  <div class="chat-header">
+    <button class="back-btn" onclick="showScreen('chat')">←</button>
+    <div>
+      <div class="chat-title">Niat Kecil</div>
+      <div class="chat-sub">Satu langkah untuk esok</div>
+    </div>
+  </div>
+  <div class="niat-intro">Muhasabah yang baik berakhir dengan satu tindakan kecil. Bukan azam besar — cukup satu perkara yang boleh kau bawa esok.</div>
+  <textarea class="niat-input" id="niat-input" rows="4" placeholder="Contoh: Nak ambil masa 5 minit sebelum tidur untuk bersyukur atas satu benda..."></textarea>
+  <div class="niat-hint">💡 Kecil dan spesifik lebih baik dari besar tapi samar.</div>
+  <button class="btn-primary active" id="niat-save-btn" onclick="saveNiat()">Simpan Niat →</button>
+</div>
+
+<!-- HISTORY -->
+<div class="screen" id="screen-history">
+  <div style="padding:24px 0 16px;position:relative;z-index:1">
+    <div class="section-label">Perjalanan kau</div>
+    <div style="font-size:20px;font-weight:300;color:var(--text)">Refleksi lepas</div>
+  </div>
+  <div id="history-list"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="showScreen('home')"><span class="nav-icon">🌙</span>Hari Ini</button>
+  <button class="nav-btn" id="nav-history" onclick="showScreen('history')"><span class="nav-icon">📖</span>Sejarah</button>
+</nav>
+
+</div>
+
+<script>
+// ── Config — TUKAR API KEY KAT SINI ──────────────────────
+const GEMINI_KEY = "LETAK_API_KEY_KAU_SINI";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+
+const MOOD_CONTEXT = {
+  "Tenang":   "User rasa tenang. Refleksi mendalam — explore kenapa ketenangan tu terasa dan macam mana nak kekalkan.",
+  "Resah":    "User rasa resah. Jangan terus fix. Tanya dulu apa yang buat resah, bagi dia rasa didengar dulu.",
+  "Kosong":   "User rasa kosong — mungkin disconnection dari diri atau dari Allah. Pendekatan perlahan, jangan overwhelm.",
+  "Bersalah": "User rasa bersalah. Kenalpasti sama ada guilt tu healthy atau toxic. Tanya dengan lembut.",
+  "Keliru":   "User rasa keliru. Bantu fokus pada satu perkara dulu sebelum pergi lebih dalam.",
+};
+
+// ── State ─────────────────────────────────────────────────
+let selectedMood = null;
+let selectedEmoji = null;
+let chatHistory = [];
+let exchCount = 0;
+let isLoading = false;
+let sessions = [];
+
+try { sessions = JSON.parse(localStorage.getItem("mhsb_v3") || "[]"); } catch(e) {}
+function saveSessions() { try { localStorage.setItem("mhsb_v3", JSON.stringify(sessions)); } catch(e) {} }
+
+// ── Gemini API ────────────────────────────────────────────
+async function askGemini(prompt) {
+  const res = await fetch(GEMINI_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { maxOutputTokens: 1000, temperature: 0.8 }
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+}
+
+function parseResponse(raw) {
+  const ayahMatch = raw.match(/<ayah>([\s\S]*?)<\/ayah>/);
+  const text = raw.replace(/<ayah>[\s\S]*?<\/ayah>/g, "").trim();
+  let ayah = null;
+  if (ayahMatch) {
+    const c = ayahMatch[1];
+    ayah = {
+      arabic:      (c.match(/arabic:\s*(.+)/) || [])[1]?.trim(),
+      translation: (c.match(/translation:\s*(.+)/) || [])[1]?.trim(),
+      source:      (c.match(/source:\s*(.+)/) || [])[1]?.trim(),
+    };
+  }
+  return { text, ayah };
+}
+
+// ── Init ──────────────────────────────────────────────────
+function init() {
+  const h = new Date().getHours();
+  const greet = h < 12 ? "Selamat pagi" : h < 15 ? "Selamat tengahari" : h < 19 ? "Selamat petang" : "Selamat malam";
+  document.getElementById("greeting-time").textContent = greet;
+  updateStreak();
+  checkFollowup();
+  checkPatterns();
+}
+
+function updateStreak() {
+  if (!sessions.length) return;
+  const today = new Date().toDateString();
+  const yest = new Date(Date.now() - 86400000).toDateString();
+  const last = new Date(sessions[sessions.length-1].date).toDateString();
+  if (last !== today && last !== yest) { document.getElementById("streak-count").textContent = 0; return; }
+  let streak = 1;
+  const check = new Date(sessions[sessions.length-1].date);
+  for (let i = sessions.length-2; i >= 0; i--) {
+    check.setDate(check.getDate()-1);
+    if (new Date(sessions[i].date).toDateString() === check.toDateString()) streak++;
+    else break;
+  }
+  document.getElementById("streak-count").textContent = streak;
+}
+
+function checkFollowup() {
+  if (!sessions.length) return;
+  const last = sessions[sessions.length-1];
+  if (!last.niat) return;
+  if (new Date(last.date).toDateString() === new Date().toDateString()) return;
+  if (last.niatStatus !== "pending") return;
+  document.getElementById("yesterday-niat").textContent = last.niat;
+  document.getElementById("followup-card").style.display = "block";
+}
+
+function checkPatterns() {
+  if (sessions.length < 3) return;
+  const recent = sessions.slice(-5);
+  const counts = {};
+  recent.forEach(s => counts[s.mood] = (counts[s.mood]||0)+1);
+  const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  const lines = [];
+  const emojiMap = {Tenang:"🌙",Resah:"🌊",Kosong:"🌫️",Bersalah:"🍂",Keliru:"🌪️"};
+  if (top[1] >= 2) lines.push(`<div style="font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:8px">${emojiMap[top[0]]||""} ${top[1]} dari ${recent.length} sesi terakhir kau rasa ${top[0]}.</div>`);
+  const done = sessions.filter(s=>s.niatStatus==="ya").length;
+  const tot = sessions.filter(s=>s.niat).length;
+  if (tot > 0) {
+    const pct = Math.round(done/tot*100);
+    lines.push(`<div style="font-size:13px;color:var(--soft);line-height:1.6">✨ Kau capai niat kau ${pct}% daripada masa. ${pct>=60?"Konsisten tu.":"Niat kecil — tapi start somewhere."}</div>`);
+  }
+  if (lines.length) {
+    document.getElementById("pattern-card").style.display = "block";
+    document.getElementById("pattern-content").innerHTML = lines.join("");
+  }
+}
+
+// ── Mood ──────────────────────────────────────────────────
+function selectMood(btn) {
+  document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  selectedMood = btn.dataset.mood;
+  selectedEmoji = btn.dataset.emoji;
+  document.getElementById("greeting-mood").textContent = `${selectedEmoji} ${selectedMood.toLowerCase()}`;
+  document.getElementById("start-btn").classList.add("active");
+}
+
+// ── Navigation ────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-"+name).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  const nav = document.getElementById("nav-"+name);
+  if (nav) nav.classList.add("active");
+  const app = document.querySelector(".app");
+  app.style.paddingBottom = (name==="home"||name==="history") ? "68px" : "0";
+  if (name === "history") renderHistory();
+}
+
+function goHome() { showScreen("home"); }
+
+// ── Chat ──────────────────────────────────────────────────
+async function startMuhasabah() {
+  if (!selectedMood) return;
+  chatHistory = [];
+  exchCount = 0;
+  document.getElementById("messages").innerHTML = "";
+  document.getElementById("active-chip").textContent = `${selectedEmoji} ${selectedMood}`;
+  showScreen("chat");
+
+  const prompt = `Kau adalah teman muhasabah — bukan ustaz, bukan therapist. Cara kau: tenang, lembut, manusiawi. Guna Bahasa Melayu natural.
+
+Mood user sekarang: ${selectedMood} ${selectedEmoji}
+Context: ${MOOD_CONTEXT[selectedMood]}
+
+Bagi satu mesej pembuka yang acknowledge mood dia, dan tanya SATU soalan spesifik dan mendalam. Soalan kena kena dengan mood ${selectedMood}.
+
+Kalau betul-betul kena, boleh include:
+<ayah>
+arabic: [teks arab]
+translation: [terjemahan Melayu]
+source: [nama surah/hadith]
+</ayah>
+
+Balas 3-5 ayat sahaja. Jangan ceramah.`;
+
+  showTyping();
+  try {
+    const raw = await askGemini(prompt);
+    chatHistory.push({ role:"assistant", content: raw });
+    removeTyping();
+    const { text, ayah } = parseResponse(raw);
+    addMessage("ai", text, ayah);
+  } catch(e) {
+    removeTyping();
+    addMessage("ai", "Ralat: " + e.message);
+  }
+}
+
+async function sendMessage() {
+  const input = document.getElementById("user-input");
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+  input.value = "";
+  autoResize(input);
+  addMessage("user", text);
+  chatHistory.push({ role:"user", content: text });
+  exchCount++;
+  isLoading = true;
+  document.getElementById("send-btn").disabled = true;
+  showTyping();
+
+  try {
+    let raw = "";
+    if (exchCount >= 3) {
+      const p = `Kau teman muhasabah. Sesi fasa akhir.
+Mood: ${selectedMood}
+Conversation:
+${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
+
+Bagi closing warm dan cadangkan satu niat kecil spesifik berdasarkan apa yang dia share. Tanya kalau dia ready. Pendek, warm, jangan ceramah.`;
+      raw = await askGemini(p);
+      setTimeout(() => {
+        const btn = document.createElement("button");
+        btn.className = "btn-primary active";
+        btn.style.cssText = "margin-top:8px;max-width:100%";
+        btn.textContent = "Tetapkan Niat Kecil →";
+        btn.onclick = () => showScreen("niat");
+        document.getElementById("messages").appendChild(btn);
+        scrollMessages();
+      }, 400);
+    } else {
+      const fullPrompt = `Kau teman muhasabah. Lembut, tenang, manusiawi. Bahasa Melayu natural.
+Mood asal: ${selectedMood} ${selectedEmoji}. Context: ${MOOD_CONTEXT[selectedMood]}
+
+Conversation setakat ni:
+${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
+
+Cara respond: Acknowledge apa yang dia cakap (1-2 ayat), tanya satu soalan follow-up lebih dalam. Boleh connect dengan konsep Islam tapi jangan forced. Boleh include <ayah>...</ayah> kalau relevan. JANGAN ceramah. 3-5 ayat sahaja.`;
+      raw = await askGemini(fullPrompt);
+    }
+    chatHistory.push({ role:"assistant", content: raw });
+    removeTyping();
+    const { text: t, ayah } = parseResponse(raw);
+    addMessage("ai", t, ayah);
+  } catch(e) {
+    removeTyping();
+    addMessage("ai", "Ralat: " + e.message);
+  }
+
+  isLoading = false;
+  document.getElementById("send-btn").disabled = false;
+}
+
+// ── Message rendering ─────────────────────────────────────
+function addMessage(role, text, ayah) {
+  const msgs = document.getElementById("messages");
+  const time = new Date().toLocaleTimeString("ms-MY", {hour:"2-digit",minute:"2-digit"});
+  const div = document.createElement("div");
+  div.className = `msg ${role}`;
+  div.innerHTML = `<div class="bubble">${text}</div><div class="msg-time">${time}</div>`;
+  msgs.appendChild(div);
+  if (ayah && (ayah.arabic || ayah.translation)) {
+    const ac = document.createElement("div");
+    ac.className = "ayah-card";
+    ac.innerHTML = `
+      ${ayah.arabic ? `<div class="ayah-arabic">${ayah.arabic}</div>` : ""}
+      ${ayah.translation ? `<div class="ayah-translation">"${ayah.translation}"</div>` : ""}
+      ${ayah.source ? `<div class="ayah-source">— ${ayah.source}</div>` : ""}
+    `;
+    msgs.appendChild(ac);
+  }
+  scrollMessages();
+}
+
+function showTyping() {
+  const msgs = document.getElementById("messages");
+  const div = document.createElement("div");
+  div.id = "typing";
+  div.className = "typing";
+  div.innerHTML = `<div class="dot"></div><div class="dot"></div><div class="dot"></div>`;
+  msgs.appendChild(div);
+  scrollMessages();
+}
+
+function removeTyping() {
+  const t = document.getElementById("typing");
+  if (t) t.remove();
+}
+
+function scrollMessages() {
+  const msgs = document.getElementById("messages");
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── Niat ──────────────────────────────────────────────────
+function saveNiat() {
+  const niat = document.getElementById("niat-input").value.trim();
+  if (!niat) return;
+  const session = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    mood: selectedMood,
+    moodEmoji: selectedEmoji,
+    niat,
+    niatStatus: "pending"
+  };
+  sessions.push(session);
+  saveSessions();
+  const btn = document.getElementById("niat-save-btn");
+  btn.textContent = "✓ Niat disimpan";
+  btn.classList.add("saved");
+  btn.disabled = true;
+  document.getElementById("niat-input").value = "";
+  setTimeout(() => {
+    showScreen("home");
+    updateStreak();
+    checkPatterns();
+    btn.textContent = "Simpan Niat →";
+    btn.classList.remove("saved");
+    btn.disabled = false;
+  }, 1400);
+}
+
+function updateNiatStatus(status) {
+  if (!sessions.length) return;
+  sessions[sessions.length-1].niatStatus = status;
+  saveSessions();
+  document.getElementById("followup-card").style.display = "none";
+  checkPatterns();
+}
+
+// ── History ───────────────────────────────────────────────
+function renderHistory() {
+  const list = document.getElementById("history-list");
+  const sorted = [...sessions].reverse();
+  if (!sorted.length) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🌙</div><div style="font-size:14px;line-height:1.6">Belum ada sesi muhasabah.<br/>Mulakan perjalanan kau hari ni.</div></div>`;
+    return;
+  }
+  const statusMap = {
+    ya:      { cls:"s-ya",      lbl:"✓ Tercapai" },
+    partial: { cls:"s-partial", lbl:"◑ Separuh" },
+    no:      { cls:"s-no",      lbl:"✗ Belum" },
+    pending: { cls:"s-pending", lbl:"⏳ Belum follow up" },
+  };
+  list.innerHTML = sorted.map(s => {
+    const d = new Date(s.date).toLocaleDateString("ms-MY",{weekday:"long",day:"numeric",month:"long"});
+    const st = statusMap[s.niatStatus] || statusMap.pending;
+    return `
+      <div class="history-item">
+        <div class="history-date">${d}</div>
+        <div class="history-mood"><span style="font-size:17px">${s.moodEmoji}</span><span style="font-size:13px;color:var(--soft)">${s.mood}</span></div>
+        ${s.niat
+          ? `<div class="history-niat">${s.niat}</div><div class="history-status ${st.cls}">${st.lbl}</div>`
+          : `<div style="font-size:12px;color:var(--muted);margin-top:4px">Tiada niat ditetapkan</div>`}
+      </div>`;
+  }).join("");
+}
+
+// ── Utils ─────────────────────────────────────────────────
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 120) + "px";
+}
+
+// ── Start ─────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
