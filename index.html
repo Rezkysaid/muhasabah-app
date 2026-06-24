@@ -41,7 +41,7 @@ background-image:
 #screen-chat.active{overflow:hidden}
 
 /* Header */
-.header{padding:28px 0 14px;display:flex;align-items:center;justify-content:space-between}
+.header{padding:calc(28px + env(safe-area-inset-top)) 0 14px;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-mark{width:30px;height:30px;flex-shrink:0}
 .logo-arabic{font-family:'Noto Naskh Arabic',Georgia,serif;font-weight:600;font-size:22px;color:var(--gold);line-height:1}
@@ -114,7 +114,7 @@ background-image:
 .btn-primary.saved{background:rgba(45,212,191,.18);border-color:var(--teal);color:var(--teal);cursor:default;animation:savedPop .4s ease}
 
 /* Chat header */
-.chat-header{padding:18px 0 14px;border-bottom:1px solid var(--border);margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.chat-header{padding:calc(18px + env(safe-area-inset-top)) 0 14px;border-bottom:1px solid var(--border);margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-shrink:0}
 .back-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:4px;transition:transform .15s,color .15s}
 .back-btn:active{transform:scale(.85) translateX(-2px)}
 .chat-title{font-size:16px;font-weight:500;color:var(--text)}
