@@ -686,6 +686,14 @@ function showScreen(name) {
   app.style.paddingBottom = showNav ? "68px" : "0";
   document.getElementById("bottom-nav").style.display = showNav ? "flex" : "none";
   if (name === "history") renderHistory();
+  if (name === "home") {
+    // "Mulakan Muhasabah" hanya boleh ditekan kalau ada mood dipilih.
+    // Jalan pintas direct-chat ("Umum") tak kira sebagai mood — reset bila balik home.
+    const sel = document.querySelector(".mood-btn.selected");
+    selectedMood = sel ? sel.dataset.mood : null;
+    document.getElementById("start-btn").classList.toggle("active", !!sel);
+    document.getElementById("greeting-mood").textContent = sel ? selectedMood.toLowerCase() : "macam mana?";
+  }
 }
 
 function goHome() { showScreen("home"); }
