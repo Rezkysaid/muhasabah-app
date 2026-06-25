@@ -594,6 +594,8 @@ function renderStaticAyahList(containerId, data) {
 }
 
 // ── Init ──────────────────────────────────────────────────
+document.addEventListener("touchstart", function () {}, false);
+
 function init() {
   const h = new Date().getHours();
   const greet = h < 12 ? "Selamat pagi" : h < 15 ? "Selamat tengahari" : h < 19 ? "Selamat petang" : "Selamat malam";
