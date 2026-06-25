@@ -76,6 +76,14 @@ background-image:
 .history-mood-icon{width:16px;height:16px;display:inline-flex;color:var(--soft)}
 .history-mood-icon svg{width:100%;height:100%;display:block}
 
+/* Today card: daily ayat + prayer time */
+.today-card{background:linear-gradient(160deg,var(--card),var(--deep));border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:22px;animation:fadeUp .35s ease both}
+.today-quote-text{font-size:14px;color:var(--text);line-height:1.6;font-style:italic}
+.today-quote-source{font-size:11px;color:var(--gold);margin-top:6px;letter-spacing:.02em}
+.today-prayer-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.today-prayer-label{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.today-prayer-value{font-size:13px;color:var(--teal);font-weight:600}
+
 /* Cards */
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;animation:fadeUp .35s ease both}
 .card-title{font-size:12px;font-weight:500;color:var(--soft);margin-bottom:10px;display:flex;align-items:center}
@@ -234,6 +242,14 @@ background-image:
     <div class="streak">🔥 <span id="streak-count">0</span> hari</div>
   </div>
   <div class="home-body">
+  <div class="today-card">
+    <div class="today-quote-text" id="today-quote-text">—</div>
+    <div class="today-quote-source" id="today-quote-source"></div>
+    <div class="today-prayer-row">
+      <div class="today-prayer-label">Solat seterusnya</div>
+      <div class="today-prayer-value" id="today-prayer-value">Memuat...</div>
+    </div>
+  </div>
   <div class="greeting">
     <div class="greeting-time" id="greeting-time">Selamat pagi</div>
     <div class="greeting-main">Hati kau hari ni <span id="greeting-mood">macam mana?</span></div>
@@ -488,6 +504,68 @@ const DOA_CEMAS = [
   { arabic:"رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي", translation:"Wahai Tuhanku, lapangkanlah dadaku, dan permudahkanlah urusanku.", source:"Doa Nabi Musa — Taha: 25-26" },
 ];
 const ZIKIR_LIST = ["Astaghfirullah", "Lā ḥawla walā quwwata illā billāh", "Hasbunallahu wa ni'mal wakīl", "Subhanallah"];
+const DAILY_QUOTES = [
+  { text:"Iaitu orang-orang yang beriman dan tenang tenteram hati mereka dengan mengingati Allah.", source:"Ar-Ra'd: 28" },
+  { text:"Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya.", source:"Al-Baqarah: 286" },
+  { text:"Dan sesiapa yang bertaqwa kepada Allah, nescaya Allah akan mengadakan baginya jalan keluar.", source:"At-Talaq: 2" },
+  { text:"Dan janganlah kamu berputus asa daripada rahmat Allah.", source:"Yusuf: 87" },
+  { text:"Cukuplah Allah menjadi penolong kami, dan Dialah sebaik-baik pemberi pertolongan.", source:"Ali 'Imran: 173" },
+  { text:"Sesungguhnya bersama kesusahan itu ada kemudahan.", source:"Al-Insyirah: 6" },
+  { text:"Wahai Tuhanku, lapangkanlah dadaku, dan permudahkanlah urusanku.", source:"Taha: 25-26" },
+  { text:"Berdoalah kepada-Ku, nescaya Aku akan memperkenankan doa kamu.", source:"Al-Ghafir: 60" },
+  { text:"Dan Dia mendapati kamu dalam keadaan miskin, lalu Dia memberikan kecukupan.", source:"Ad-Duha: 8" },
+  { text:"Sesungguhnya Allah bersama orang-orang yang sabar.", source:"Al-Baqarah: 153" },
+  { text:"Maka sesungguhnya bersama kesulitan ada kemudahan.", source:"Al-Insyirah: 5" },
+  { text:"Hati menjadi tenang dengan mengingati Allah, bukan dengan mengejar dunia.", source:"Renungan" },
+  { text:"Jangan biarkan apa yang kamu tidak boleh kawal, merampas ketenangan yang Allah beri.", source:"Renungan" },
+  { text:"Setiap kesusahan ada hikmahnya, setiap ujian ada ganjarannya.", source:"Renungan" },
+];
+function renderDailyQuote() {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  const q = DAILY_QUOTES[dayOfYear % DAILY_QUOTES.length];
+  document.getElementById("today-quote-text").textContent = q.text;
+  document.getElementById("today-quote-source").textContent = "— " + q.source;
+}
+const PRAYER_NAMES = { Fajr:"Subuh", Dhuhr:"Zohor", Asr:"Asar", Maghrib:"Maghrib", Isha:"Isyak" };
+const PRAYER_ORDER = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+function renderNextPrayer(timings) {
+  const now = new Date();
+  const todayStr = now.toDateString();
+  let next = null;
+  for (const key of PRAYER_ORDER) {
+    const raw = timings[key];
+    if (!raw) continue;
+    const [h, m] = raw.split(":").map(Number);
+    const t = new Date(todayStr + " " + h + ":" + m);
+    if (t > now) { next = { key, t }; break; }
+  }
+  const el = document.getElementById("today-prayer-value");
+  if (!next) {
+    el.textContent = PRAYER_NAMES.Fajr + " esok";
+    return;
+  }
+  const diffMin = Math.round((next.t - now) / 60000);
+  const hh = Math.floor(diffMin / 60), mm = diffMin % 60;
+  const countdown = hh > 0 ? `${hh}j ${mm}m` : `${mm}m`;
+  el.textContent = `${PRAYER_NAMES[next.key]} • ${countdown} lagi`;
+}
+function loadPrayerTimes(lat, lng) {
+  const today = new Date();
+  const dateStr = `${String(today.getDate()).padStart(2,"0")}-${String(today.getMonth()+1).padStart(2,"0")}-${today.getFullYear()}`;
+  fetch(`https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=2`)
+    .then(r => r.json())
+    .then(d => renderNextPrayer(d.data.timings))
+    .catch(() => { document.getElementById("today-prayer-value").textContent = "Tidak tersedia"; });
+}
+function initPrayerTimes() {
+  const fallback = () => loadPrayerTimes(3.139, 101.6869);
+  if (!navigator.geolocation) { fallback(); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => loadPrayerTimes(pos.coords.latitude, pos.coords.longitude),
+    fallback,
+    { timeout: 8000 }
+  );
+}
 const PHASES = [
   { name:"inhale", label:"Tarik nafas perlahan...", dur:4000 },
   { name:"hold",   label:"Tahan...",                dur:7000 },
@@ -523,6 +601,8 @@ function init() {
   updateStreak();
   checkFollowup();
   checkPatterns();
+  renderDailyQuote();
+  initPrayerTimes();
 }
 
 function updateStreak() {
