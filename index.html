@@ -123,6 +123,9 @@ background-image:
 .btn-primary.active{background:linear-gradient(135deg,var(--teal-dim),rgba(45,212,191,.28));border-color:var(--teal);color:var(--teal);cursor:pointer}
 .btn-primary.active:active{transform:scale(.97)}
 .btn-primary.saved{background:rgba(45,212,191,.18);border-color:var(--teal);color:var(--teal);cursor:default;animation:savedPop .4s ease}
+.link-btn{display:block;width:100%;text-align:center;background:none;border:none;padding:14px 0 4px;margin:0;color:var(--muted);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.01em;transition:color .2s}
+.link-btn:active{transform:scale(.97)}
+.link-btn:hover{color:var(--teal)}
 
 /* Chat header */
 .chat-header{padding:calc(18px + env(safe-area-inset-top)) 0 14px;border-bottom:1px solid var(--border);margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-shrink:0}
@@ -286,6 +289,7 @@ background-image:
     <div id="pattern-content"></div>
   </div>
   <button class="btn-primary" id="start-btn" onclick="startMuhasabah()">Mulakan Muhasabah →</button>
+  <button class="link-btn" onclick="startDirectChat()">Atau, terus mula bercerita tanpa pilih mood →</button>
   </div>
 </div>
 
@@ -439,6 +443,7 @@ const MOOD_CONTEXT = {
   "Bersalah": "User rasa bersalah. Kenalpasti sama ada guilt tu healthy atau toxic. Tanya dengan lembut.",
   "Keliru":   "User rasa keliru. Bantu fokus pada satu perkara dulu sebelum pergi lebih dalam.",
   "Cemas":    "User rasa cemas/anxious teruk. Jadi pendengar yang tenang dulu — jangan terus bagi solution. Validate perasaan dia, tanya apa yang buat dia rasa macam ni sekarang, lembut dan perlahan.",
+  "Umum":     "User belum tentukan mood spesifik, dia just nak terus bercerita. Jangan assume apa-apa dulu — tanya dengan terbuka apa yang ada dalam fikiran/hati dia sekarang.",
 };
 
 // ── Mood icons (minimalist SVG, no emoji) ──────────────────
@@ -449,6 +454,7 @@ const MOOD_ICON = {
   Bersalah: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M7 17c6-1 10-5 10-12 0 0-9-1-11 7-1.2 4 1 5 1 5z"/><path d="M6.5 17.5l3.5-4.5"/></svg>`,
   Keliru: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5c4.1 0 7.5 3.4 7.5 7.5s-3.4 7.5-7.5 7.5-6-2.4-6-5.4 2.2-4.8 4.8-4.8 4 1.7 4 3.7-1.6 2.8-3.2 2.8"/></svg>`,
   Cemas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 12h3l2-4.5 3 9 2-6.5 1.5 2h6.5"/></svg>`,
+  Umum: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 19l1.2-3.6A8 8 0 1112 20a8.4 8.4 0 01-4-1L4 19z"/></svg>`,
 };
 
 const BRAND_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg>`;
@@ -691,12 +697,13 @@ async function startMuhasabah() {
   document.getElementById("active-chip").innerHTML = `<span class="chip-icon">${MOOD_ICON[selectedMood]||""}</span>${selectedMood}`;
   showScreen("chat");
 
+  const isDirect = selectedMood === "Umum";
   const prompt = `Kau adalah teman muhasabah — bukan ustaz, bukan therapist. Cara kau: tenang, lembut, manusiawi. Guna Bahasa Melayu natural.
 
-Mood user sekarang: ${selectedMood}
+${isDirect ? "User terus nak mula bercerita tanpa pilih mood spesifik." : `Mood user sekarang: ${selectedMood}`}
 Context: ${MOOD_CONTEXT[selectedMood]}
 
-Bagi satu mesej pembuka yang acknowledge mood dia, dan tanya SATU soalan spesifik dan mendalam. Soalan kena kena dengan mood ${selectedMood}.
+${isDirect ? "Bagi satu mesej pembukaan yang ringkas dan mesra, tanya SATU soalan terbuka tentang apa yang ada dalam fikiran/hati dia hari ni." : `Bagi satu mesej pembuka yang acknowledge mood dia, dan tanya SATU soalan spesifik dan mendalam. Soalan kena kena dengan mood ${selectedMood}.`}
 
 Kalau betul-betul kena, boleh include:
 <ayah>
@@ -723,6 +730,12 @@ Balas 3-5 ayat sahaja. Jangan ceramah.`;
 function startAnxietyChat() {
   selectedMood = "Cemas";
   document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("selected"));
+  startMuhasabah();
+}
+
+function startDirectChat() {
+  document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("selected"));
+  selectedMood = "Umum";
   startMuhasabah();
 }
 
