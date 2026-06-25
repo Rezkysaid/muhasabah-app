@@ -37,6 +37,7 @@ background-image:
 
 /* Screens */
 .screen{display:none;flex-direction:column;flex:1;padding:0 24px;position:relative;z-index:1;overflow-y:auto}
+.home-body{display:flex;flex-direction:column;flex:1;justify-content:center}
 .screen.active{display:flex;animation:screenIn .32s cubic-bezier(.22,.61,.36,1)}
 #screen-chat.active{overflow:hidden}
 
@@ -232,6 +233,7 @@ background-image:
     </div>
     <div class="streak">🔥 <span id="streak-count">0</span> hari</div>
   </div>
+  <div class="home-body">
   <div class="greeting">
     <div class="greeting-time" id="greeting-time">Selamat pagi</div>
     <div class="greeting-main">Hati kau hari ni <span id="greeting-mood">macam mana?</span></div>
@@ -263,6 +265,7 @@ background-image:
     <div id="pattern-content"></div>
   </div>
   <button class="btn-primary" id="start-btn" onclick="startMuhasabah()">Mulakan Muhasabah →</button>
+  </div>
 </div>
 
 <!-- CHAT -->
