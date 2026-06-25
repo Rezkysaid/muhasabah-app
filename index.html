@@ -747,7 +747,8 @@ Mood: ${selectedMood}
 Conversation:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
-Bagi closing warm dan cadangkan satu niat kecil spesifik berdasarkan apa yang dia share. Tanya kalau dia ready. Pendek, warm, jangan ceramah.`;
+Bagi closing warm dan cadangkan satu niat kecil spesifik berdasarkan apa yang dia share. Tanya kalau dia ready. Pendek, warm, jangan ceramah.
+PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks — boleh sebabkan respons terhenti separuh jalan. Cukup sebut nama surah/konsep tanpa quote penuh.`;
       raw = await askGemini(p);
       setTimeout(() => {
         const btn = document.createElement("button");
@@ -765,7 +766,8 @@ Mood asal: ${selectedMood}. Context: ${MOOD_CONTEXT[selectedMood]}
 Conversation setakat ni:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
-Cara respond: Acknowledge apa yang dia cakap (1-2 ayat), tanya satu soalan follow-up lebih dalam. Boleh connect dengan konsep Islam tapi jangan forced. Boleh include <ayah>...</ayah> kalau relevan. JANGAN ceramah. 3-5 ayat sahaja.`;
+Cara respond: Acknowledge apa yang dia cakap (1-2 ayat), tanya satu soalan follow-up lebih dalam. Boleh connect dengan konsep Islam tapi jangan forced. JANGAN ceramah. 3-5 ayat sahaja.
+PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks utama — ini boleh sebabkan respons kau terhenti separuh jalan. Kalau nak rujuk ayat, letak dalam format <ayah>arabic: ...\ntranslation: ...\nsource: ...</ayah> di hujung sahaja, dan dalam teks utama cukup sebut nama surah tanpa quote penuh.`;
       raw = await askGemini(fullPrompt);
     }
     chatHistory.push({ role:"assistant", content: raw });
