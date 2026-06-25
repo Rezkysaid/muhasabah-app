@@ -23,7 +23,7 @@
 }
 html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 body{background:var(--night);color:var(--text);font-family:'Inter',system-ui,sans-serif;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-feature-settings:'tnum' 1;letter-spacing:-.01em;touch-action:manipulation;-webkit-text-size-adjust:100%}
-.app{width:100%;max-width:480px;height:100vh;height:100dvh;display:flex;flex-direction:column;position:relative;padding-bottom:68px;overflow:hidden}
+.app{width:100%;max-width:480px;height:100vh;height:100dvh;display:flex;flex-direction:column;position:relative;padding-bottom:calc(68px + env(safe-area-inset-bottom));overflow:hidden}
 
 /* Stars */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -36,8 +36,8 @@ background-image:
   radial-gradient(1px 1px at 60% 88%,rgba(255,255,255,.07) 0%,transparent 100%);}
 
 /* Screens */
-.screen{display:none;flex-direction:column;flex:1;min-height:0;padding:0 24px;position:relative;z-index:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.home-body{display:flex;flex-direction:column;flex:1;justify-content:flex-start;padding-top:6px;padding-bottom:20px}
+.screen{display:none;flex-direction:column;flex:1;min-height:0;padding:0 24px;position:relative;z-index:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+.home-body{display:flex;flex-direction:column;flex:1;justify-content:flex-start;padding-top:6px;padding-bottom:36px}
 .screen.active{display:flex;animation:screenIn .32s cubic-bezier(.22,.61,.36,1)}
 #screen-chat.active{overflow:hidden}
 
