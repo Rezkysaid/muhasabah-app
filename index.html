@@ -123,8 +123,8 @@ background-image:
 .btn-primary.active{background:linear-gradient(135deg,var(--teal-dim),rgba(45,212,191,.28));border-color:var(--teal);color:var(--teal);cursor:pointer}
 .btn-primary.active:active{transform:scale(.97)}
 .btn-primary.saved{background:rgba(45,212,191,.18);border-color:var(--teal);color:var(--teal);cursor:default;animation:savedPop .4s ease}
-.link-btn{display:block;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 0;margin-top:10px;color:var(--soft);font-size:13.5px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.01em;transition:all .2s,transform .15s}
-.link-btn:active{transform:scale(.97)}
+.link-btn{display:block;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 0;margin-top:10px;color:var(--soft);font-size:13.5px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.01em;transition:background .2s,border-color .2s,color .2s,transform .25s cubic-bezier(.34,1.56,.64,1)}
+.link-btn:active{transform:scale(.93);background:var(--teal-dim);border-color:var(--teal);color:var(--teal);transition:transform .05s,background .05s,border-color .05s,color .05s}
 .link-btn:hover{border-color:var(--teal);color:var(--teal)}
 
 /* Chat header */
