@@ -36,8 +36,8 @@ background-image:
   radial-gradient(1px 1px at 60% 88%,rgba(255,255,255,.07) 0%,transparent 100%);}
 
 /* Screens */
-.screen{display:none;flex-direction:column;flex:1;padding:0 24px;position:relative;z-index:1;overflow-y:auto}
-.home-body{display:flex;flex-direction:column;flex:1;justify-content:flex-start;padding-top:6px}
+.screen{display:none;flex-direction:column;flex:1;min-height:0;padding:0 24px;position:relative;z-index:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.home-body{display:flex;flex-direction:column;flex:1;justify-content:flex-start;padding-top:6px;padding-bottom:20px}
 .screen.active{display:flex;animation:screenIn .32s cubic-bezier(.22,.61,.36,1)}
 #screen-chat.active{overflow:hidden}
 
