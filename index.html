@@ -137,8 +137,17 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 /* Tags */
 .tag-grid{display:flex;flex-wrap:wrap;gap:8px}
 .tag-btn{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s,transform .15s}
+.tag-btn:hover{transform:translateY(-2px);border-color:var(--teal-dim);color:var(--soft)}
 .tag-btn:active{transform:scale(.93)}
-.tag-btn.selected{background:rgba(45,212,191,.1);border-color:var(--teal);color:var(--teal)}
+.tag-btn.selected{background:rgba(45,212,191,.1);border-color:var(--teal);color:var(--teal);animation:moodPop .35s ease}
+/* Staggered pop-in so the chips feel alive when the card appears */
+#anxiety-tags .tag-btn{opacity:0;animation:fadeUp .4s ease both}
+#anxiety-tags .tag-btn:nth-child(1){animation-delay:.02s}
+#anxiety-tags .tag-btn:nth-child(2){animation-delay:.08s}
+#anxiety-tags .tag-btn:nth-child(3){animation-delay:.14s}
+#anxiety-tags .tag-btn:nth-child(4){animation-delay:.2s}
+#anxiety-tags .tag-btn:nth-child(5){animation-delay:.26s}
+#anxiety-tags .tag-btn:nth-child(6){animation-delay:.32s}
 
 /* Breathing — layered "blooming" pacer instead of a flat circle */
 .breathe-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:36px 0 24px}
@@ -180,6 +189,8 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .btn-primary{width:100%;padding:16px;margin-top:8px;background:transparent;border:1px dashed var(--border);border-radius:16px;color:var(--muted);font-size:15px;font-weight:500;cursor:not-allowed;font-family:inherit;transition:all .2s,transform .15s}
 .btn-primary.active{background:linear-gradient(135deg,var(--teal-dim),rgba(45,212,191,.32));border:1px solid var(--teal);border-radius:16px;color:#eafffb;box-shadow:0 12px 28px -14px rgba(45,212,191,.6);cursor:pointer}
 .btn-primary.active:active{transform:scale(.97)}
+.btn-primary.active.btn-pulse{animation:btnInvitePulse 2.4s ease-in-out infinite}
+.btn-primary.active.btn-pulse:active{animation:none}
 .btn-primary.saved{background:rgba(45,212,191,.18);border-color:var(--teal);color:var(--teal);cursor:default;animation:savedPop .4s ease}
 .link-btn{display:block;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 0;margin-top:10px;color:var(--soft);font-size:13.5px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.01em;transition:background .2s,border-color .2s,color .2s,transform .25s cubic-bezier(.34,1.56,.64,1)}
 .link-btn:active{transform:scale(.93);background:var(--teal-dim);border-color:var(--teal);color:var(--teal);transition:transform .05s,background .05s,border-color .05s,color .05s}
@@ -238,8 +249,8 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 
 /* Niat screen */
 .niat-intro{font-size:14px;color:var(--soft);line-height:1.7;margin-bottom:22px}
-.niat-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;color:var(--text);font-size:14px;font-family:inherit;resize:none;line-height:1.6;outline:none;margin-bottom:8px;transition:border-color .2s}
-.niat-input:focus{border-color:var(--teal-dim)}
+.niat-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;color:var(--text);font-size:14px;font-family:inherit;resize:none;line-height:1.6;outline:none;margin-bottom:8px;transition:border-color .2s,box-shadow .2s,transform .2s}
+.niat-input:focus{border-color:var(--teal-dim);box-shadow:0 0 0 3px rgba(45,212,191,.09);transform:translateY(-1px)}
 .niat-input::placeholder{color:var(--muted);font-style:italic}
 .niat-hint{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.5}
 
@@ -276,6 +287,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 @keyframes moodPop{0%{transform:scale(1)}45%{transform:scale(1.22)}100%{transform:scale(1)}}
 @keyframes savedPop{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
 @keyframes streakGlow{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}50%{box-shadow:0 0 0 4px rgba(201,168,76,.08)}}
+@keyframes btnInvitePulse{0%,100%{box-shadow:0 12px 28px -14px rgba(45,212,191,.6);transform:scale(1)}50%{box-shadow:0 14px 34px -10px rgba(45,212,191,.85),0 0 0 5px rgba(45,212,191,.07);transform:scale(1.015)}}
 
 /* Scrollbar */
 ::-webkit-scrollbar{width:4px}
@@ -437,7 +449,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
       <button class="tag-btn" data-tag="Lain-lain" onclick="toggleTag(this)">Lain-lain</button>
     </div>
     <textarea class="niat-input" id="anxiety-note" rows="3" placeholder="(Pilihan) Cerita ringkas apa yang berlaku..." style="margin-top:12px"></textarea>
-    <button class="btn-primary active" id="anxiety-log-btn" onclick="saveAnxietyLog()">Simpan & Teruskan</button>
+    <button class="btn-primary active btn-pulse" id="anxiety-log-btn" onclick="saveAnxietyLog()">Simpan & Teruskan</button>
   </div>
   <div style="height:24px"></div>
 </div>
