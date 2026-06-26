@@ -374,6 +374,7 @@ background-image:
     <textarea class="niat-input" id="anxiety-note" rows="3" placeholder="(Pilihan) Cerita ringkas apa yang berlaku..." style="margin-top:12px"></textarea>
     <button class="btn-primary active" id="anxiety-log-btn" onclick="saveAnxietyLog()">Simpan & Teruskan</button>
   </div>
+  <div style="height:24px"></div>
 </div>
 
 <!-- BREATHING -->
@@ -694,7 +695,7 @@ function showScreen(name) {
   if (nav) nav.classList.add("active");
   const app = document.querySelector(".app");
   const showNav = (name === "home" || name === "history" || name === "anxiety");
-  app.style.paddingBottom = showNav ? "68px" : "0";
+  app.style.paddingBottom = showNav ? "calc(68px + env(safe-area-inset-bottom))" : "0";
   document.getElementById("bottom-nav").style.display = showNav ? "flex" : "none";
   if (name === "history") renderHistory();
   if (name === "home") {
