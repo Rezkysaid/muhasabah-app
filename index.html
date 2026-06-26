@@ -50,16 +50,16 @@ background-image:
 .streak{display:flex;align-items:center;gap:6px;background:rgba(201,168,76,.1);border:1px solid var(--gold-dim);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--gold);animation:streakGlow 3s ease-in-out infinite}
 
 /* Greeting */
-.greeting{padding-bottom:24px}
+.greeting{padding-bottom:15px}
 .greeting-time{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
 .greeting-main{font-size:23px;font-weight:300;color:var(--text);line-height:1.35;letter-spacing:-.015em}
 .greeting-main span{font-family:'Caveat',cursive;color:var(--teal);font-weight:700;font-size:1.55em;letter-spacing:0;vertical-align:-1px;transition:color .25s}
 
 /* Section label */
-.section-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.section-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:13px}
 
 /* Mood grid */
-.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:24px}
+.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:30px}
 .mood-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:inherit;transition:all .18s,transform .15s}
 .mood-btn:active{transform:scale(.92)}
 .mood-btn.selected{background:rgba(45,212,191,.08);border-color:var(--teal)}
@@ -79,8 +79,9 @@ background-image:
 .history-mood-icon svg{width:100%;height:100%;display:block}
 
 /* Today card: daily ayat + prayer time */
-.today-card{position:relative;background:linear-gradient(160deg,var(--card),var(--deep));border:1px solid var(--border);border-radius:18px;padding:22px 20px 18px;margin-bottom:20px;overflow:hidden;animation:fadeUp .35s ease both}
-.today-quote-mark{display:block;font-family:'Lora',Georgia,serif;font-size:38px;line-height:1;color:var(--gold);opacity:.35;margin-bottom:-4px}
+.today-card{position:relative;background:radial-gradient(125% 80% at 90% -12%,rgba(45,212,191,.13),transparent 58%),linear-gradient(168deg,var(--card),var(--deep));border:1px solid var(--border);border-radius:20px;padding:24px 22px 18px;margin-bottom:30px;overflow:hidden;box-shadow:0 16px 32px -20px rgba(0,0,0,.75);animation:fadeUp .35s ease both}
+.today-quote-mark{display:block;width:31px;height:23px;color:var(--gold);opacity:.55;margin-bottom:7px}
+.today-quote-mark svg{width:100%;height:100%;display:block}
 .today-quote-text{font-family:'Lora',Georgia,serif;font-style:italic;font-size:16px;font-weight:400;color:var(--text);line-height:1.6;letter-spacing:.002em}
 .today-quote-source{font-size:10.5px;font-weight:600;color:var(--gold);margin-top:10px;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
 .today-quote-source::before{content:'';width:14px;height:1px;background:var(--gold-dim)}
@@ -91,6 +92,13 @@ background-image:
 /* Cards */
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;animation:fadeUp .35s ease both}
 .card-title{font-size:12px;font-weight:500;color:var(--soft);margin-bottom:10px;display:flex;align-items:center}
+/* Card hierarchy variants — deliberately NOT all the same */
+.card-soft{background:linear-gradient(150deg,rgba(45,212,191,.07),rgba(26,35,50,.55));border-color:var(--teal-dim)}
+.card-flat{background:rgba(255,255,255,.018);border:none;border-left:2px solid var(--gold-dim);border-radius:0 12px 12px 0;padding:15px 18px}
+
+/* Handwriting accent — recurring human voice */
+.accent-hand{font-family:'Caveat',cursive;font-weight:600;letter-spacing:0}
+.home-signoff{font-family:'Caveat',cursive;font-size:18px;color:var(--muted);text-align:center;margin-top:22px;opacity:.65;letter-spacing:.01em}
 
 /* Anxiety hub cards */
 .anxiety-hub-card{cursor:pointer;transition:transform .15s,border-color .2s}
@@ -252,12 +260,12 @@ background-image:
   </div>
   <div class="home-body">
   <div class="today-card">
-    <span class="today-quote-mark">&ldquo;</span>
+    <span class="today-quote-mark"><svg viewBox="0 0 41 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.2 3.6C2.7 6.7.7 11.3 1 16.9c.3 5.4 3.2 8.9 7.4 8.9 3.1 0 5.3-2.1 5.3-5 0-2.8-2-4.9-4.7-4.9-.9 0-1.7.2-2.4.6.5-3.4 2.4-6.3 5.6-8.4C12 5.3 10.4 3.4 8.6 3c-.8-.2-1.7-.1-2.4.6z"/><path d="M27 3.6c-3.5 3.1-5.5 7.7-5.2 13.3.3 5.4 3.2 8.9 7.4 8.9 3.1 0 5.3-2.1 5.3-5 0-2.8-2-4.9-4.7-4.9-.9 0-1.7.2-2.4.6.5-3.4 2.4-6.3 5.6-8.4-.2-2.8-1.8-4.7-3.6-5.1-.8-.2-1.7-.1-2.4.6z"/></svg></span>
     <div class="today-quote-text" id="today-quote-text">—</div>
     <div class="today-quote-source" id="today-quote-source"></div>
     <div class="today-prayer-row">
       <div class="today-prayer-label">Solat seterusnya</div>
-      <div class="today-prayer-value" id="today-prayer-value">Memuat...</div>
+      <div class="today-prayer-value" id="today-prayer-value">Tengah semak…</div>
     </div>
   </div>
   <div class="greeting">
@@ -277,7 +285,7 @@ background-image:
     <div style="font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:10px">Cuba teknik tenangkan hati dulu sebelum mula muhasabah.</div>
     <button class="btn-primary active" style="margin-top:0" onclick="showScreen('anxiety')">Tenangkan Hati →</button>
   </div>
-  <div id="followup-card" style="display:none" class="card">
+  <div id="followup-card" style="display:none" class="card card-soft">
     <div class="card-title"><span class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg></span>Semalam kau niatkan...</div>
     <div class="niat-text" id="yesterday-niat"></div>
     <div class="status-row">
@@ -286,12 +294,13 @@ background-image:
       <button class="status-btn" onclick="updateNiatStatus('no')">✗ Belum</button>
     </div>
   </div>
-  <div id="pattern-card" style="display:none" class="card">
+  <div id="pattern-card" style="display:none" class="card card-flat">
     <div class="card-title"><span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 19V11"/><path d="M12 19V5"/><path d="M19 19v-7"/></svg></span>Pattern kau</div>
     <div id="pattern-content"></div>
   </div>
   <button class="btn-primary" id="start-btn" onclick="startMuhasabah()">Mulakan Muhasabah →</button>
   <button class="link-btn" onclick="startDirectChat()">Atau, terus mula bercerita tanpa pilih mood →</button>
+  <div class="home-signoff">satu langkah kecil, setiap hari</div>
   </div>
 </div>
 
@@ -568,7 +577,7 @@ function loadPrayerTimes(lat, lng) {
   fetch(`https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lng}&method=2`)
     .then(r => r.json())
     .then(d => renderNextPrayer(d.data.timings))
-    .catch(() => { document.getElementById("today-prayer-value").textContent = "Tidak tersedia"; });
+    .catch(() => { document.getElementById("today-prayer-value").textContent = "Tak dapat waktu solat sekarang"; });
 }
 function initPrayerTimes() {
   const fallback = () => loadPrayerTimes(3.139, 101.6869);
@@ -971,7 +980,7 @@ function renderHistory() {
   const list = document.getElementById("history-list");
   const sorted = [...sessions].reverse();
   if (!sorted.length) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">${MOOD_ICON.Tenang}</div><div style="font-size:14px;line-height:1.6">Belum ada sesi muhasabah.<br/>Mulakan perjalanan kau hari ni.</div></div>`;
+    list.innerHTML = `<div class="empty"><div class="empty-icon">${MOOD_ICON.Tenang}</div><div style="font-size:14px;line-height:1.6">Belum ada apa-apa di sini.<br/><span class="accent-hand" style="font-size:21px;color:var(--soft)">mula perlahan-lahan, hari ni pun cukup</span></div></div>`;
     return;
   }
   const statusMap = {
