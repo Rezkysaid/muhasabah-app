@@ -312,8 +312,8 @@ background-image:
   <div class="chat-header">
     <button class="back-btn" onclick="goHome()">←</button>
     <div style="flex:1">
-      <div class="chat-title">Muhasabah</div>
-      <div class="chat-sub">Refleksi hari ini</div>
+      <div class="chat-title" id="chat-title">Muhasabah</div>
+      <div class="chat-sub" id="chat-sub">Refleksi hari ini</div>
     </div>
     <div class="mood-chip" id="active-chip"></div>
   </div>
@@ -380,6 +380,45 @@ background-image:
   <div style="height:24px"></div>
 </div>
 
+<!-- SOCIAL HUB -->
+<div class="screen" id="screen-social">
+  <div class="chat-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div>
+      <div class="chat-title">Cabaran Sosial</div>
+      <div class="chat-sub">Cerita apa yang kau hadapi</div>
+    </div>
+  </div>
+  <div class="section-label">Situasi biasa</div>
+  <div class="tag-grid" id="social-situations" style="margin-bottom:14px">
+    <button class="tag-btn" onclick="startSocialChat('Aku nervous nak cakap dalam group')">Nervous cakap dalam group</button>
+    <button class="tag-btn" onclick="startSocialChat('Aku rasa orang selalu judge aku')">Rasa orang judge aku</button>
+    <button class="tag-btn" onclick="startSocialChat('Aku tak boleh nak tolak permintaan orang')">Tak boleh tolak orang</button>
+    <button class="tag-btn" onclick="startSocialChat('Lepas jumpa orang, aku selalu overthink balik apa yang aku cakap')">Overthink lepas jumpa orang</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="card-icon" id="hub-icon-social"></span>Cerita situasi kau sendiri</div>
+    <textarea class="niat-input" id="social-input" rows="3" placeholder="Cth: Aku rasa cemas sangat bila kena present depan orang ramai..." style="margin-top:2px"></textarea>
+    <button class="btn-primary active" id="social-start-btn" onclick="startSocialFromInput()">Mula Bercerita →</button>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- REFLECT -->
+<div class="screen" id="screen-reflect">
+  <div class="chat-header">
+    <button class="back-btn" onclick="showScreen('chat')">←</button>
+    <div>
+      <div class="chat-title">Refleksi</div>
+      <div class="chat-sub">Lepas luah, rasa macam mana?</div>
+    </div>
+  </div>
+  <div class="niat-intro">Tak perlu jawapan sempurna. Cukup tulis macam mana kau rasa sekarang, lepas cerita semua tadi.</div>
+  <textarea class="niat-input" id="reflect-input" rows="4" placeholder="Contoh: Rasa lega sikit, walaupun masih risau..."></textarea>
+  <div class="niat-hint">💡 Reflection ni disimpan untuk kau tengok balik progress kau nanti.</div>
+  <button class="btn-primary active" id="reflect-save-btn" onclick="saveReflection()">Simpan Refleksi →</button>
+</div>
+
 <!-- BREATHING -->
 <div class="screen" id="screen-breathing">
   <div class="chat-header">
@@ -442,6 +481,7 @@ background-image:
 <nav class="bottom-nav" id="bottom-nav">
   <button class="nav-btn active" id="nav-home" onclick="showScreen('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M15.2 4C11 4 7.6 7.4 7.6 11.6s3.4 7.6 7.6 7.6c.9 0 1.8-.2 2.6-.5-3-1.1-5.1-4-5.1-7.1s2.1-6 5.1-7.1c-.8-.3-1.7-.5-2.6-.5z"/></svg></span>Hari Ini</button>
   <button class="nav-btn" id="nav-anxiety" onclick="showScreen('anxiety')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h11.5a2.5 2.5 0 100-5"/><path d="M3 13.5h15a2.5 2.5 0 110 5H10"/><path d="M3 19h7.5"/></svg></span>Tenang</button>
+  <button class="nav-btn" id="nav-social" onclick="showScreen('social')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9" r="2.4" opacity=".55"/><path d="M15.8 20c0-2.3 1.3-4.3 3.2-5.3" opacity=".55"/></svg></span>Sosial</button>
   <button class="nav-btn" id="nav-history" onclick="showScreen('history')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5c1.5-.8 3.2-1 4.5-.6 1 .3 2 .8 2.5 1.4v12.2c-.5-.6-1.5-1.1-2.5-1.4-1.3-.4-3-.2-4.5.6V5.5z"/><path d="M20 5.5c-1.5-.8-3.2-1-4.5-.6-1 .3-2 .8-2.5 1.4v12.2c.5-.6 1.5-1.1 2.5-1.4 1.3-.4 3-.2 4.5.6V5.5z"/></svg></span>Sejarah</button>
 </nav>
 
@@ -477,6 +517,7 @@ const AYAH_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const WIND_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h11.5a2.5 2.5 0 100-5"/><path d="M3 13.5h15a2.5 2.5 0 110 5H10"/><path d="M3 19h7.5"/></svg>`;
 const DUA_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M7 20c0-5.5 1.8-9 1.8-13a3.2 3.2 0 116.4 0c0 4 1.8 7.5 1.8 13"/><path d="M6 20h12"/></svg>`;
 const CHAT_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 19l1.2-3.6A8 8 0 1112 20a8.4 8.4 0 01-4-1L4 19z"/></svg>`;
+const SOCIAL_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9" r="2.4" opacity=".55"/><path d="M15.8 20c0-2.3 1.3-4.3 3.2-5.3" opacity=".55"/></svg>`;
 
 // ── State ─────────────────────────────────────────────────
 let selectedMood = null;
@@ -485,6 +526,8 @@ let exchCount = 0;
 let isLoading = false;
 let sessions = [];
 let selectedTags = [];
+let chatMode = "muhasabah";
+let socialSituation = "";
 
 try { sessions = JSON.parse(localStorage.getItem("mhsb_v3") || "[]"); } catch(e) {}
 function saveSessions() { try { localStorage.setItem("mhsb_v3", JSON.stringify(sessions)); } catch(e) {} }
@@ -624,6 +667,7 @@ function init() {
   document.getElementById("hub-icon-ayat").innerHTML = AYAH_ICON;
   document.getElementById("hub-icon-doa").innerHTML = DUA_ICON;
   document.getElementById("hub-icon-chat").innerHTML = CHAT_ICON;
+  document.getElementById("hub-icon-social").innerHTML = SOCIAL_ICON;
   renderStaticAyahList("ayat-tenang-list", AYAT_TENANG);
   renderStaticAyahList("doa-cemas-list", DOA_CEMAS);
   updateStreak();
@@ -692,7 +736,7 @@ function selectMood(btn) {
 // ── Navigation ────────────────────────────────────────────
 function showScreen(name) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active", "nav-push", "nav-pop"));
-  const showNav = (name === "home" || name === "history" || name === "anxiety");
+  const showNav = (name === "home" || name === "history" || name === "anxiety" || name === "social");
   document.getElementById("screen-"+name).classList.add("active", showNav ? "nav-pop" : "nav-push");
   document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
   const nav = document.getElementById("nav-"+name);
@@ -714,10 +758,17 @@ function showScreen(name) {
 function goHome() { showScreen("home"); }
 
 // ── Chat ──────────────────────────────────────────────────
+function setChatHeader(title, sub) {
+  document.getElementById("chat-title").textContent = title;
+  document.getElementById("chat-sub").textContent = sub;
+}
+
 async function startMuhasabah() {
   if (!selectedMood) return;
   chatHistory = [];
   exchCount = 0;
+  chatMode = "muhasabah";
+  setChatHeader("Muhasabah", "Refleksi hari ini");
   document.getElementById("messages").innerHTML = "";
   document.getElementById("active-chip").innerHTML = `<span class="chip-icon">${MOOD_ICON[selectedMood]||""}</span>${selectedMood}`;
   showScreen("chat");
@@ -764,6 +815,46 @@ function startDirectChat() {
   startMuhasabah();
 }
 
+function startSocialFromInput() {
+  const text = document.getElementById("social-input").value.trim();
+  if (!text) return;
+  document.getElementById("social-input").value = "";
+  startSocialChat(text);
+}
+
+async function startSocialChat(situationText) {
+  chatHistory = [];
+  exchCount = 1;
+  chatMode = "social";
+  socialSituation = situationText;
+  document.getElementById("messages").innerHTML = "";
+  setChatHeader("Cabaran Sosial", "Luah & faham diri");
+  document.getElementById("active-chip").innerHTML = `<span class="chip-icon">${SOCIAL_ICON}</span>Sosial`;
+  showScreen("chat");
+  addMessage("user", situationText);
+  chatHistory.push({ role:"user", content: situationText });
+
+  const prompt = `Kau teman (companion) dalam app Muraqabah AI — bukan therapist, bukan doktor, bukan ustaz. Tone: warm, empathetic, tak menghakimi. Guna bahasa yang user guna (Melayu/English/rojak, ikut gaya dia).
+
+User cerita situasi sosial yang dia hadapi: "${situationText}"
+
+Jangan terus diagnose, label, atau bagi solution. Tanya SATU soalan terbuka untuk explore situasi dia dengan lebih dalam — apa yang dia rasa, apa yang dia fikir akan jadi.
+
+Balas 2-4 ayat sahaja.`;
+
+  showTyping();
+  try {
+    const raw = await askGemini(prompt);
+    chatHistory.push({ role:"assistant", content: raw });
+    removeTyping();
+    const { text, ayah } = parseResponse(raw);
+    addMessage("ai", text, ayah);
+  } catch(e) {
+    removeTyping();
+    addMessage("ai", "Ralat: " + e.message);
+  }
+}
+
 async function sendMessage() {
   const input = document.getElementById("user-input");
   const text = input.value.trim();
@@ -779,7 +870,40 @@ async function sendMessage() {
 
   try {
     let raw = "";
-    if (exchCount >= 3) {
+    if (chatMode === "social") {
+      if (exchCount >= 3) {
+        const p = `Kau teman (companion) dalam app Muraqabah AI — bukan therapist. Sesi fasa akhir untuk cabaran sosial.
+Situasi asal: ${socialSituation}
+Conversation:
+${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
+
+Sekarang:
+1. Secara dalaman, kenalpasti pattern psikologi yang relevan (cth: fear of negative evaluation, people pleasing, conflict avoidance, low assertiveness, imposter syndrome, overthinking post-interaction, social comparison, rejection sensitivity) — TAPI JANGAN sebut nama klinikal/label tu terus kat user, cukup describe dengan bahasa biasa dan mesra.
+2. Cadangkan SATU teknik psikologi ringkas dan praktikal yang sesuai (reframing, grounding 5-4-3-2-1, box breathing, langkah kecil exposure, dll).
+3. Selepas tu, secara organik (bukan dipaksa), kaitkan dengan SATU konsep Islam yang relevan (tawakkul, izzah, husnuzon, muraqabah).
+4. Tutup dengan tanya: "Lepas reflect ni, rasa macam mana?"
+
+PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks utama — boleh sebabkan respons terhenti separuh jalan. Kalau nak rujuk ayat, letak dalam format <ayah>arabic: ...\ntranslation: ...\nsource: ...</ayah> di hujung sahaja. Balas warm, ringkas, jangan ceramah panjang.`;
+        raw = await askGemini(p);
+        setTimeout(() => {
+          const btn = document.createElement("button");
+          btn.className = "btn-primary active";
+          btn.style.cssText = "margin-top:8px;max-width:100%";
+          btn.textContent = "Catat Refleksi →";
+          btn.onclick = () => showScreen("reflect");
+          document.getElementById("messages").appendChild(btn);
+          scrollMessages();
+        }, 400);
+      } else {
+        const p = `Kau teman (companion) dalam app Muraqabah AI — bukan therapist. Tone warm, tak menghakimi. Guna bahasa yang user guna.
+Situasi asal: ${socialSituation}
+Conversation setakat ni:
+${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
+
+Cara respond: Acknowledge apa yang dia cakap (1-2 ayat), explore lagi dengan SATU soalan follow-up untuk faham pattern dia. Jangan label/diagnose, jangan bagi solution lagi. 2-4 ayat sahaja.`;
+        raw = await askGemini(p);
+      }
+    } else if (exchCount >= 3) {
       const p = `Kau teman muhasabah. Sesi fasa akhir.
 Mood: ${selectedMood}
 Conversation:
@@ -890,6 +1014,27 @@ function saveNiat() {
     updateStreak();
     checkPatterns();
     btn.textContent = "Simpan Niat →";
+    btn.classList.remove("saved");
+    btn.disabled = false;
+  }, 1400);
+}
+
+// ── Social: reflection ──────────────────────────────────────
+function saveReflection() {
+  const note = document.getElementById("reflect-input").value.trim();
+  if (!note) return;
+  sessions.push({ id: Date.now(), date: new Date().toISOString(), type: "social", situation: socialSituation, reflection: note });
+  saveSessions();
+  const btn = document.getElementById("reflect-save-btn");
+  btn.textContent = "✓ Refleksi disimpan";
+  btn.classList.add("saved");
+  btn.disabled = true;
+  document.getElementById("reflect-input").value = "";
+  setTimeout(() => {
+    showScreen("home");
+    updateStreak();
+    checkPatterns();
+    btn.textContent = "Simpan Refleksi →";
     btn.classList.remove("saved");
     btn.disabled = false;
   }, 1400);
@@ -1012,6 +1157,15 @@ function renderHistory() {
           <div class="history-date">${d}</div>
           <div class="history-mood"><span style="font-size:16px">🌬️</span><span style="font-size:13px;color:var(--soft)">Latihan Nafas 4-7-8</span></div>
           <div style="font-size:12px;color:var(--muted);margin-top:4px">${feelMap[s.feeling]||""}</div>
+        </div>`;
+    }
+    if (s.type === "social") {
+      return `
+        <div class="history-item" style="animation-delay:${delay}s">
+          <div class="history-date">${d}</div>
+          <div class="history-mood"><span class="history-mood-icon">${SOCIAL_ICON}</span><span style="font-size:13px;color:var(--soft)">Cabaran Sosial</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">${s.situation}</div>
+          ${s.reflection ? `<div class="history-niat">${s.reflection}</div>` : ""}
         </div>`;
     }
     const st = statusMap[s.niatStatus] || statusMap.pending;
