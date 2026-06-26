@@ -140,14 +140,16 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .tag-btn:hover{transform:translateY(-2px);border-color:var(--teal-dim);color:var(--soft)}
 .tag-btn:active{transform:scale(.93)}
 .tag-btn.selected{background:rgba(45,212,191,.1);border-color:var(--teal);color:var(--teal);animation:moodPop .35s ease}
-/* Staggered pop-in so the chips feel alive when the card appears */
-#anxiety-tags .tag-btn{opacity:0;animation:fadeUp .4s ease both}
-#anxiety-tags .tag-btn:nth-child(1){animation-delay:.02s}
-#anxiety-tags .tag-btn:nth-child(2){animation-delay:.08s}
-#anxiety-tags .tag-btn:nth-child(3){animation-delay:.14s}
-#anxiety-tags .tag-btn:nth-child(4){animation-delay:.2s}
-#anxiety-tags .tag-btn:nth-child(5){animation-delay:.26s}
-#anxiety-tags .tag-btn:nth-child(6){animation-delay:.32s}
+/* Staggered pop-in so the chips feel alive when the card appears.
+   Default state is fully visible — the animation is opt-in via .chips-in
+   (added by JS on each screen show) so a missed replay never leaves them stuck invisible. */
+#anxiety-tags.chips-in .tag-btn{animation:fadeUp .4s ease backwards}
+#anxiety-tags.chips-in .tag-btn:nth-child(1){animation-delay:.02s}
+#anxiety-tags.chips-in .tag-btn:nth-child(2){animation-delay:.08s}
+#anxiety-tags.chips-in .tag-btn:nth-child(3){animation-delay:.14s}
+#anxiety-tags.chips-in .tag-btn:nth-child(4){animation-delay:.2s}
+#anxiety-tags.chips-in .tag-btn:nth-child(5){animation-delay:.26s}
+#anxiety-tags.chips-in .tag-btn:nth-child(6){animation-delay:.32s}
 
 /* Breathing — layered "blooming" pacer instead of a flat circle */
 .breathe-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:36px 0 24px}
@@ -831,6 +833,12 @@ function showScreen(name) {
   app.style.paddingBottom = showNav ? "calc(68px + env(safe-area-inset-bottom))" : "0";
   document.getElementById("bottom-nav").style.display = showNav ? "flex" : "none";
   if (name === "history") renderHistory();
+  if (name === "anxiety") {
+    const grid = document.getElementById("anxiety-tags");
+    grid.classList.remove("chips-in");
+    void grid.offsetWidth;
+    grid.classList.add("chips-in");
+  }
   if (name === "home") {
     // "Mulakan Muhasabah" hanya boleh ditekan kalau ada mood dipilih.
     // Jalan pintas direct-chat ("Umum") tak kira sebagai mood — reset bila balik home.
