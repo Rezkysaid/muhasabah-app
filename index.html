@@ -128,15 +128,34 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .tag-btn:active{transform:scale(.93)}
 .tag-btn.selected{background:rgba(45,212,191,.1);border-color:var(--teal);color:var(--teal)}
 
-/* Breathing */
+/* Breathing — layered "blooming" pacer instead of a flat circle */
 .breathe-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:36px 0 24px}
-.breathe-circle-wrap{width:192px;height:192px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.breathe-circle{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,191,.25),rgba(45,212,191,.05));border:1px solid var(--teal-dim);transform:scale(1)}
-.breathe-circle.inhale{transform:scale(1.35);transition:transform 4s ease-in-out}
+.breathe-circle-wrap{position:relative;width:228px;height:228px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.breathe-circle-wrap::before{content:'';position:absolute;width:140px;height:140px;border-radius:50%;border:1px solid color-mix(in srgb,var(--teal) 45%,transparent);opacity:0;transform:scale(1);transition:transform 8s ease-in-out,opacity 8s ease-in-out}
+.breathe-circle-wrap:has(.breathe-circle.inhale)::before,.breathe-circle-wrap:has(.breathe-circle.hold)::before{opacity:.55;transform:scale(1.7);transition:transform 4s ease-out,opacity 4s ease-out}
+.breathe-ring{position:absolute;border-radius:50%;pointer-events:none}
+.breathe-ring-1{width:100%;height:100%;border:1px dashed color-mix(in srgb,var(--teal) 30%,transparent);animation:breatheSpin 50s linear infinite}
+.breathe-ring-2{width:76%;height:76%;border:1px dotted color-mix(in srgb,var(--gold) 32%,transparent);animation:breatheSpin 34s linear infinite reverse}
+.breathe-petal{position:absolute;top:50%;left:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:radial-gradient(circle,var(--teal),rgba(45,212,191,.05));opacity:.4;animation:petalFloat 3.6s ease-in-out infinite}
+.breathe-petal:nth-of-type(2){transform:rotate(60deg) translateY(-99px);animation-delay:.4s;background:radial-gradient(circle,var(--gold),rgba(227,184,94,.05))}
+.breathe-petal:nth-of-type(3){transform:rotate(120deg) translateY(-99px);animation-delay:.8s}
+.breathe-petal:nth-of-type(4){transform:rotate(180deg) translateY(-99px);animation-delay:1.2s;background:radial-gradient(circle,var(--violet),rgba(155,140,255,.05))}
+.breathe-petal:nth-of-type(5){transform:rotate(240deg) translateY(-99px);animation-delay:1.6s}
+.breathe-petal:nth-of-type(6){transform:rotate(300deg) translateY(-99px);animation-delay:2s;background:radial-gradient(circle,var(--gold),rgba(227,184,94,.05))}
+.breathe-petal:nth-of-type(1){transform:rotate(0deg) translateY(-99px)}
+.breathe-circle{position:relative;z-index:2;width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.16),transparent 42%),
+              radial-gradient(circle at 68% 72%,rgba(45,212,191,.3),transparent 58%),
+              radial-gradient(circle,rgba(45,212,191,.22),rgba(45,212,191,.04) 72%,transparent);
+  border:1px solid var(--teal-dim);box-shadow:0 0 36px -6px rgba(45,212,191,.4),inset 0 0 26px rgba(45,212,191,.12);transform:scale(1)}
+.breathe-circle::after{content:'';position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.07)}
+.breathe-circle.inhale{transform:scale(1.35);box-shadow:0 0 54px 2px rgba(45,212,191,.55),inset 0 0 36px rgba(45,212,191,.18);transition:transform 4s ease-in-out,box-shadow 4s ease-in-out}
 .breathe-circle.hold{transform:scale(1.35);transition:transform .3s ease}
-.breathe-circle.exhale{transform:scale(1);transition:transform 8s ease-in-out}
+.breathe-circle.exhale{transform:scale(1);box-shadow:0 0 36px -6px rgba(45,212,191,.4),inset 0 0 26px rgba(45,212,191,.12);transition:transform 8s ease-in-out,box-shadow 8s ease-in-out}
 .breathe-phase{font-size:16px;color:var(--text);font-weight:500;text-align:center}
 .breathe-zikir{font-size:14px;color:var(--gold);font-style:italic;text-align:center;min-height:20px}
+@keyframes breatheSpin{to{transform:rotate(360deg)}}
+@keyframes petalFloat{0%,100%{opacity:.25;filter:blur(.5px)}50%{opacity:.65;filter:blur(0)}}
 
 /* Niat followup */
 .niat-text{font-size:14px;color:var(--text);font-style:italic;line-height:1.6}
@@ -444,7 +463,13 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
   </div>
   <div class="breathe-wrap">
-    <div class="breathe-circle-wrap"><div class="breathe-circle" id="breathe-circle"></div></div>
+    <div class="breathe-circle-wrap">
+      <div class="breathe-ring breathe-ring-1"></div>
+      <div class="breathe-ring breathe-ring-2"></div>
+      <span class="breathe-petal"></span><span class="breathe-petal"></span><span class="breathe-petal"></span>
+      <span class="breathe-petal"></span><span class="breathe-petal"></span><span class="breathe-petal"></span>
+      <div class="breathe-circle" id="breathe-circle"></div>
+    </div>
     <div class="breathe-phase" id="breathe-phase">Tekan mula untuk bernafas</div>
     <div class="breathe-zikir" id="breathe-zikir"></div>
   </div>
