@@ -17,23 +17,30 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --night:#0d1117;--deep:#141b25;--card:#1a2332;--border:#1e2d42;
-  --teal:#2dd4bf;--teal-dim:#1a7a70;--gold:#c9a84c;--gold-dim:#7a6030;
-  --text:#e2e8f0;--muted:#64748b;--soft:#94a3b8;--danger:#f87171;
+  --night:#0e0b16;--deep:#15111f;--card:#1c1827;--card-2:#241f33;--border:#2b2540;
+  --teal:#2dd4bf;--teal-dim:#1a7a70;--gold:#e3b85e;--gold-dim:#8a6a2e;
+  --rose:#e8849b;--violet:#9b8cff;--amber:#f0a868;
+  --text:#ece9f3;--muted:#7b7390;--soft:#aaa0bd;--danger:#f87171;
 }
 html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 body{background:var(--night);color:var(--text);font-family:'Inter',system-ui,sans-serif;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-feature-settings:'tnum' 1;letter-spacing:-.01em;touch-action:manipulation;-webkit-text-size-adjust:100%}
 .app{width:100%;max-width:480px;height:100vh;height:100dvh;display:flex;flex-direction:column;position:relative;padding-bottom:calc(68px + env(safe-area-inset-bottom));overflow:hidden}
 
-/* Stars */
+/* Ambient warm night glow + faint stars */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-background-image:
-  radial-gradient(1px 1px at 15% 12%,rgba(255,255,255,.15) 0%,transparent 100%),
-  radial-gradient(1px 1px at 80% 22%,rgba(255,255,255,.10) 0%,transparent 100%),
-  radial-gradient(1px 1px at 45% 55%,rgba(255,255,255,.08) 0%,transparent 100%),
-  radial-gradient(1px 1px at 8% 70%,rgba(255,255,255,.12) 0%,transparent 100%),
-  radial-gradient(1px 1px at 88% 78%,rgba(255,255,255,.09) 0%,transparent 100%),
-  radial-gradient(1px 1px at 60% 88%,rgba(255,255,255,.07) 0%,transparent 100%);}
+background:
+  radial-gradient(135% 70% at 78% -8%,rgba(227,184,94,.10) 0%,transparent 46%),
+  radial-gradient(120% 60% at 12% 4%,rgba(45,212,191,.08) 0%,transparent 50%),
+  radial-gradient(150% 90% at 50% 118%,rgba(155,140,255,.07) 0%,transparent 55%),
+  radial-gradient(1px 1px at 15% 12%,rgba(255,243,220,.18) 0%,transparent 100%),
+  radial-gradient(1px 1px at 80% 22%,rgba(255,243,220,.12) 0%,transparent 100%),
+  radial-gradient(1px 1px at 45% 55%,rgba(255,243,220,.09) 0%,transparent 100%),
+  radial-gradient(1px 1px at 8% 70%,rgba(255,243,220,.13) 0%,transparent 100%),
+  radial-gradient(1.2px 1.2px at 88% 78%,rgba(255,243,220,.10) 0%,transparent 100%),
+  radial-gradient(1px 1px at 60% 88%,rgba(255,243,220,.08) 0%,transparent 100%);}
+/* Hand-crafted grain texture — kills the flat "template" feel */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.04;mix-blend-mode:soft-light;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 
 /* Screens */
 .screen{display:none;flex-direction:column;flex:1;min-height:0;padding:0 24px;position:relative;z-index:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;scrollbar-width:none}
@@ -52,25 +59,32 @@ background-image:
 .streak{display:flex;align-items:center;gap:6px;background:rgba(201,168,76,.1);border:1px solid var(--gold-dim);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--gold);animation:streakGlow 3s ease-in-out infinite}
 
 /* Greeting */
-.greeting{padding-bottom:15px}
-.greeting-time{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
-.greeting-main{font-size:23px;font-weight:300;color:var(--text);line-height:1.35;letter-spacing:-.015em}
-.greeting-main span{font-family:'Caveat',cursive;color:var(--teal);font-weight:700;font-size:1.55em;letter-spacing:0;vertical-align:-1px;transition:color .25s}
+.greeting{padding-bottom:18px}
+.greeting-time{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.13em;text-transform:uppercase;margin-bottom:9px;opacity:.85}
+.greeting-time::before{content:'';width:18px;height:1px;background:linear-gradient(90deg,var(--gold-dim),transparent)}
+.greeting-main{font-size:25px;font-weight:300;color:var(--text);line-height:1.32;letter-spacing:-.015em}
+.greeting-main span{font-family:'Caveat',cursive;color:var(--teal);font-weight:700;font-size:1.5em;letter-spacing:0;vertical-align:-1px;transition:color .25s}
 
 /* Section label */
 .section-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:13px}
 
-/* Mood grid */
-.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:30px}
-.mood-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font-family:inherit;transition:all .18s,transform .15s}
-.mood-btn:active{transform:scale(.92)}
-.mood-btn.selected{background:rgba(45,212,191,.08);border-color:var(--teal)}
-.mood-emoji{width:22px;height:22px;color:var(--soft);transition:color .18s}
+/* Mood grid — each feeling has its own colour */
+.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:30px}
+.mood-btn{position:relative;background:linear-gradient(165deg,var(--card-2),var(--card));border:1px solid var(--border);border-radius:17px;padding:13px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-family:inherit;transition:border-color .2s,transform .15s,box-shadow .2s}
+.mood-btn[data-mood="Tenang"]{--accent:var(--teal)}
+.mood-btn[data-mood="Resah"]{--accent:var(--amber)}
+.mood-btn[data-mood="Kosong"]{--accent:var(--soft)}
+.mood-btn[data-mood="Bersalah"]{--accent:var(--rose)}
+.mood-btn[data-mood="Keliru"]{--accent:var(--violet)}
+.mood-btn:active{transform:scale(.91)}
+.mood-btn.selected{border-color:var(--accent);box-shadow:0 8px 22px -12px var(--accent),inset 0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent)}
+.mood-ico{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 13%,transparent);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);transition:background .2s,border-color .2s}
+.mood-btn.selected .mood-ico{background:color-mix(in srgb,var(--accent) 22%,transparent);border-color:var(--accent)}
+.mood-emoji{width:21px;height:21px;color:var(--accent);display:flex;transition:color .18s}
 .mood-emoji svg{width:100%;height:100%;display:block}
-.mood-btn.selected .mood-emoji{animation:moodPop .35s ease}
-.mood-label{font-size:9.5px;font-weight:500;color:var(--muted);text-align:center;letter-spacing:.01em}
-.mood-btn.selected .mood-label{color:var(--teal)}
-.mood-btn.selected .mood-emoji{color:var(--teal)}
+.mood-btn.selected .mood-ico{animation:moodPop .35s ease}
+.mood-label{font-size:9.5px;font-weight:500;color:var(--muted);text-align:center;letter-spacing:.01em;transition:color .2s}
+.mood-btn.selected .mood-label{color:var(--accent)}
 .chip-icon{width:13px;height:13px;display:inline-flex;vertical-align:-2px;margin-right:4px}
 .chip-icon svg{width:100%;height:100%;display:block}
 .streak-icon{width:13px;height:13px;display:inline-flex;color:var(--gold)}
@@ -81,8 +95,9 @@ background-image:
 .history-mood-icon svg{width:100%;height:100%;display:block}
 
 /* Today card: daily ayat + prayer time */
-.today-card{position:relative;background:radial-gradient(125% 80% at 90% -12%,rgba(45,212,191,.13),transparent 58%),linear-gradient(168deg,var(--card),var(--deep));border:1px solid var(--border);border-radius:20px;padding:24px 22px 18px;margin-bottom:30px;overflow:hidden;box-shadow:0 16px 32px -20px rgba(0,0,0,.75);animation:fadeUp .35s ease both}
-.today-quote-mark{display:block;width:31px;height:23px;color:var(--gold);opacity:.55;margin-bottom:7px}
+.today-card{position:relative;background:radial-gradient(130% 85% at 88% -14%,rgba(227,184,94,.16),transparent 56%),radial-gradient(110% 70% at 5% 110%,rgba(45,212,191,.08),transparent 60%),linear-gradient(168deg,var(--card-2),var(--deep));border:1px solid var(--border);border-radius:22px;padding:25px 23px 19px;margin-bottom:30px;overflow:hidden;box-shadow:0 18px 38px -22px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.03);animation:fadeUp .35s ease both}
+.today-card::after{content:'';position:absolute;top:0;right:0;width:96px;height:96px;background:radial-gradient(circle at 70% 30%,rgba(227,184,94,.14),transparent 70%);pointer-events:none}
+.today-quote-mark{display:block;width:33px;height:25px;color:var(--gold);opacity:.6;margin-bottom:8px;transform:rotate(-3deg)}
 .today-quote-mark svg{width:100%;height:100%;display:block}
 .today-quote-text{font-family:'Lora',Georgia,serif;font-style:italic;font-size:16px;font-weight:400;color:var(--text);line-height:1.6;letter-spacing:.002em}
 .today-quote-source{font-size:10.5px;font-weight:600;color:var(--gold);margin-top:10px;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
@@ -131,8 +146,8 @@ background-image:
 .status-btn:active{transform:scale(.93)}
 
 /* CTA */
-.btn-primary{width:100%;padding:15px;margin-top:8px;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--muted);font-size:15px;font-weight:500;cursor:not-allowed;font-family:inherit;transition:all .2s,transform .15s}
-.btn-primary.active{background:linear-gradient(135deg,var(--teal-dim),rgba(45,212,191,.28));border-color:var(--teal);color:var(--teal);cursor:pointer}
+.btn-primary{width:100%;padding:16px;margin-top:8px;background:transparent;border:1px dashed var(--border);border-radius:16px;color:var(--muted);font-size:15px;font-weight:500;cursor:not-allowed;font-family:inherit;transition:all .2s,transform .15s}
+.btn-primary.active{background:linear-gradient(135deg,var(--teal-dim),rgba(45,212,191,.32));border:1px solid var(--teal);border-radius:16px;color:#eafffb;box-shadow:0 12px 28px -14px rgba(45,212,191,.6);cursor:pointer}
 .btn-primary.active:active{transform:scale(.97)}
 .btn-primary.saved{background:rgba(45,212,191,.18);border-color:var(--teal);color:var(--teal);cursor:default;animation:savedPop .4s ease}
 .link-btn{display:block;width:100%;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 0;margin-top:10px;color:var(--soft);font-size:13.5px;font-weight:500;font-family:inherit;cursor:pointer;letter-spacing:.01em;transition:background .2s,border-color .2s,color .2s,transform .25s cubic-bezier(.34,1.56,.64,1)}
@@ -277,11 +292,11 @@ background-image:
   </div>
   <div class="section-label">Keadaan hati sekarang</div>
   <div class="mood-grid">
-    <button class="mood-btn" data-mood="Tenang" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Tenang</span></button>
-    <button class="mood-btn" data-mood="Resah" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Resah</span></button>
-    <button class="mood-btn" data-mood="Kosong" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Kosong</span></button>
-    <button class="mood-btn" data-mood="Bersalah" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Bersalah</span></button>
-    <button class="mood-btn" data-mood="Keliru" onclick="selectMood(this)"><span class="mood-emoji"></span><span class="mood-label">Keliru</span></button>
+    <button class="mood-btn" data-mood="Tenang" onclick="selectMood(this)"><span class="mood-ico"><span class="mood-emoji"></span></span><span class="mood-label">Tenang</span></button>
+    <button class="mood-btn" data-mood="Resah" onclick="selectMood(this)"><span class="mood-ico"><span class="mood-emoji"></span></span><span class="mood-label">Resah</span></button>
+    <button class="mood-btn" data-mood="Kosong" onclick="selectMood(this)"><span class="mood-ico"><span class="mood-emoji"></span></span><span class="mood-label">Kosong</span></button>
+    <button class="mood-btn" data-mood="Bersalah" onclick="selectMood(this)"><span class="mood-ico"><span class="mood-emoji"></span></span><span class="mood-label">Bersalah</span></button>
+    <button class="mood-btn" data-mood="Keliru" onclick="selectMood(this)"><span class="mood-ico"><span class="mood-emoji"></span></span><span class="mood-label">Keliru</span></button>
   </div>
   <div id="anxiety-hint" style="display:none" class="card">
     <div class="card-title"><span class="card-icon" id="anxiety-hint-icon"></span>Rasa cemas sangat?</div>
@@ -724,11 +739,17 @@ function checkPatterns() {
 }
 
 // ── Mood ──────────────────────────────────────────────────
+const MOOD_ACCENT = {
+  Tenang: "var(--teal)", Resah: "var(--amber)", Kosong: "var(--soft)",
+  Bersalah: "var(--rose)", Keliru: "var(--violet)",
+};
 function selectMood(btn) {
   document.querySelectorAll(".mood-btn").forEach(b => b.classList.remove("selected"));
   btn.classList.add("selected");
   selectedMood = btn.dataset.mood;
-  document.getElementById("greeting-mood").textContent = selectedMood.toLowerCase();
+  const g = document.getElementById("greeting-mood");
+  g.textContent = selectedMood.toLowerCase();
+  g.style.color = MOOD_ACCENT[selectedMood] || "";
   document.getElementById("start-btn").classList.add("active");
   document.getElementById("anxiety-hint").style.display = (selectedMood === "Resah") ? "block" : "none";
 }
@@ -751,7 +772,9 @@ function showScreen(name) {
     const sel = document.querySelector(".mood-btn.selected");
     selectedMood = sel ? sel.dataset.mood : null;
     document.getElementById("start-btn").classList.toggle("active", !!sel);
-    document.getElementById("greeting-mood").textContent = sel ? selectedMood.toLowerCase() : "macam mana?";
+    const g = document.getElementById("greeting-mood");
+    g.textContent = sel ? selectedMood.toLowerCase() : "macam mana?";
+    g.style.color = sel ? (MOOD_ACCENT[selectedMood] || "") : "";
   }
 }
 
