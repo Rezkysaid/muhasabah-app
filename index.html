@@ -339,7 +339,8 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .doa-entry{display:flex;align-items:center;gap:14px;margin-top:20px;padding:16px 16px 16px 15px;border-radius:18px;cursor:pointer;background:radial-gradient(120% 80% at 85% -10%,rgba(227,184,94,.12),transparent 55%),linear-gradient(160deg,#0d1219,#0a0e15);border:1px solid color-mix(in srgb,var(--gold) 18%,var(--border));box-shadow:inset 0 1px 0 rgba(255,255,255,.03);transition:transform .15s,border-color .2s;-webkit-tap-highlight-color:transparent}
 .doa-entry:active{transform:scale(.98)}
 .doa-entry:hover{border-color:color-mix(in srgb,var(--gold) 40%,var(--border))}
-.doa-entry-ico{flex-shrink:0;width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;background:color-mix(in srgb,var(--gold) 12%,transparent);border:1px solid color-mix(in srgb,var(--gold) 24%,transparent)}
+.doa-entry-ico{flex-shrink:0;width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent);border:1px solid color-mix(in srgb,var(--gold) 24%,transparent)}
+.doa-entry-ico svg{width:23px;height:23px;display:block}
 .doa-entry-text{flex:1;min-width:0}
 .doa-entry-title{font-size:15px;font-weight:600;color:var(--text)}
 .doa-entry-sub{font-size:12px;color:var(--soft);line-height:1.45;margin-top:2px}
@@ -481,7 +482,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   <button class="btn-primary" id="start-btn" onclick="startMuhasabah()">Mulakan Muhasabah →</button>
   <button class="link-btn" onclick="startDirectChat()">Atau, terus mula bercerita tanpa pilih mood →</button>
   <div class="doa-entry" onclick="showScreen('doa')">
-    <span class="doa-entry-ico">🤲</span>
+    <span class="doa-entry-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M11.4 12V9.2a1.3 1.3 0 0 0-2.6 0v3.6L7.5 11.4c-.6-.7-1.6-.8-2.3-.3-.7.6-.8 1.6-.2 2.3l3.1 3.5c1 1.1 2.4 1.7 3.9 1.7"/><path d="M12.6 12V9.2a1.3 1.3 0 0 1 2.6 0v3.6l1.3-1.4c.6-.7 1.6-.8 2.3-.3.7.6.8 1.6.2 2.3l-3.1 3.5c-1 1.1-2.4 1.7-3.9 1.7"/><circle cx="12" cy="6" r="1" fill="currentColor" stroke="none"/></svg></span>
     <div class="doa-entry-text">
       <div class="doa-entry-title">Bisikan Hati</div>
       <div class="doa-entry-sub">Tulis doa sendiri — terus pada Allah, tanpa kata orang lain.</div>
