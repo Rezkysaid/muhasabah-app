@@ -351,28 +351,51 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .doa-input{width:100%;min-height:190px;background:transparent;border:1px solid color-mix(in srgb,var(--border) 65%,transparent);border-radius:16px;padding:20px;color:var(--text);font-size:18px;line-height:1.75;font-family:'Lora',Georgia,serif;resize:none;outline:none;transition:border-color .3s,box-shadow .3s}
 .doa-input:focus{border-color:color-mix(in srgb,var(--teal) 32%,transparent);box-shadow:0 0 0 3px rgba(45,212,191,.06)}
 .doa-input::placeholder{color:var(--muted);font-style:italic;opacity:.55}
-.doa-send{width:100%;padding:15px;margin-top:14px;border:1px solid color-mix(in srgb,var(--gold) 42%,transparent);border-radius:16px;background:linear-gradient(135deg,rgba(138,106,46,.38),rgba(227,184,94,.16));color:#f3e6c8;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:.02em;box-shadow:0 10px 26px -14px rgba(227,184,94,.55);transition:transform .15s,box-shadow .2s,opacity .2s}
+.doa-send{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px;margin-top:14px;border:1px solid color-mix(in srgb,var(--gold) 42%,transparent);border-radius:16px;background:linear-gradient(135deg,rgba(138,106,46,.38),rgba(227,184,94,.16));color:#f3e6c8;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:.02em;box-shadow:0 10px 26px -14px rgba(227,184,94,.55);transition:transform .15s,box-shadow .2s,opacity .2s}
 .doa-send:active{transform:scale(.98)}
-.doa-ghost{position:absolute;left:20px;right:20px;top:20px;font-family:'Lora',Georgia,serif;font-size:18px;line-height:1.75;color:var(--teal);pointer-events:none;white-space:pre-wrap;opacity:1;transform:translateY(0);transition:transform 1.5s cubic-bezier(.4,0,.2,1),opacity 1.5s ease;z-index:3}
-.doa-ghost.rise{transform:translateY(-130px);opacity:0}
+.doa-send-ico{width:19px;height:19px;display:block;flex-shrink:0}
+.doa-ghost{position:absolute;left:20px;right:20px;top:20px;font-family:'Lora',Georgia,serif;font-size:18px;line-height:1.75;color:var(--teal);pointer-events:none;white-space:pre-wrap;opacity:1;transform:translateY(0) scale(1);filter:blur(0);transition:transform 1.7s cubic-bezier(.33,0,.2,1),opacity 1.7s ease,filter 1.7s ease;z-index:3;text-shadow:0 0 18px rgba(45,212,191,.35)}
+.doa-ghost.rise{transform:translateY(-150px) scale(1.05);opacity:0;filter:blur(4px)}
+/* Rising particles when a doa is sent */
+.doa-particle{position:absolute;border-radius:50%;pointer-events:none;opacity:0;background:currentColor;box-shadow:0 0 8px 1px currentColor;animation-name:doaParticleRise;animation-timing-function:cubic-bezier(.4,0,.3,1);animation-fill-mode:forwards;z-index:4}
+@keyframes doaParticleRise{0%{opacity:0;transform:translate(0,0) scale(.3)}18%{opacity:.95}100%{opacity:0;transform:translate(var(--dx),var(--rise)) scale(1.1)}}
 .doa-empty{font-size:13px;color:var(--muted);text-align:center;line-height:1.7;padding:24px 14px;font-style:italic}
-.doa-arch-card{position:relative;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;padding:15px 16px;margin-bottom:12px;animation:fadeUp .35s ease both;transition:border-color .3s,box-shadow .3s}
+.doa-arch-card{position:relative;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;padding:15px 16px;margin-bottom:12px;overflow:hidden;animation:fadeUp .35s ease both;transition:border-color .3s,box-shadow .3s,opacity .35s ease,transform .35s ease}
 .doa-arch-card.fulfilled{border-color:color-mix(in srgb,var(--gold) 35%,transparent);box-shadow:0 0 22px -10px rgba(227,184,94,.45)}
+.doa-arch-card.removing{opacity:0;transform:translateX(-22px) scale(.96)}
 .doa-arch-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
 .doa-arch-date{font-size:11px;color:var(--muted);letter-spacing:.02em}
+.doa-arch-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .doa-arch-mood{flex-shrink:0;font-size:10.5px;font-weight:600;color:var(--soft);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:2px 9px}
+.doa-del{flex-shrink:0;width:27px;height:27px;display:flex;align-items:center;justify-content:center;padding:0;background:transparent;border:none;color:var(--muted);cursor:pointer;border-radius:8px;transition:color .2s,background .2s,transform .15s;-webkit-tap-highlight-color:transparent}
+.doa-del svg{width:15px;height:15px;display:block}
+.doa-del:active{transform:scale(.88)}
+.doa-del:hover{color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,transparent)}
 .doa-arch-text{font-family:'Lora',Georgia,serif;font-size:14px;color:var(--text);line-height:1.6;font-style:italic;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .doa-termakbul{margin-top:11px;background:transparent;border:1px solid var(--border);border-radius:20px;padding:5px 13px;color:var(--muted);font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .25s,transform .15s}
 .doa-termakbul:active{transform:scale(.95)}
 .doa-termakbul.done{border-color:var(--gold);color:var(--gold);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+/* Inline delete confirmation overlay on a card */
+.doa-del-confirm{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(8,11,17,.93);border-radius:14px;opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:5}
+.doa-arch-card.confirming .doa-del-confirm{opacity:1;pointer-events:auto}
+.doa-del-q{font-size:13px;color:var(--soft);font-style:italic}
+.doa-del-row{display:flex;gap:10px}
+.doa-del-no,.doa-del-yes{padding:6px 17px;border-radius:18px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:transform .15s;border:1px solid var(--border);background:transparent}
+.doa-del-no{color:var(--muted)}
+.doa-del-no:active,.doa-del-yes:active{transform:scale(.94)}
+.doa-del-yes{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,transparent);background:color-mix(in srgb,var(--danger) 10%,transparent)}
 /* Reveal overlay after sending a doa */
-.doa-reveal{position:fixed;inset:0;z-index:300;background:#060910;display:flex;align-items:center;justify-content:center;padding:40px;opacity:0;pointer-events:none;transition:opacity .9s ease}
+.doa-reveal{position:fixed;inset:0;z-index:300;background:radial-gradient(120% 80% at 50% 38%,#0a1016,#060910 70%);display:flex;align-items:center;justify-content:center;padding:40px;opacity:0;pointer-events:none;transition:opacity 1s ease}
 .doa-reveal.show{opacity:1}
-.doa-reveal-inner{max-width:340px;text-align:center;opacity:0;transform:translateY(12px);transition:opacity 1.1s ease,transform 1.1s ease}
-.doa-reveal.ayat-in .doa-reveal-inner{opacity:1;transform:translateY(0)}
-.doa-ayat-ar{font-family:'Noto Naskh Arabic',Georgia,serif;font-size:25px;color:var(--gold);line-height:2;margin-bottom:18px}
-.doa-ayat-tr{font-family:'Lora',Georgia,serif;font-style:italic;font-size:15px;color:var(--text);line-height:1.7;margin-bottom:13px}
-.doa-ayat-src{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.doa-reveal-inner{position:relative;max-width:340px;text-align:center;opacity:0;transform:translateY(16px) scale(.97);transition:opacity 1.2s ease,transform 1.2s cubic-bezier(.2,.7,.3,1)}
+.doa-reveal-inner::before{content:'';position:absolute;left:50%;top:34%;width:300px;height:300px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(227,184,94,.13),transparent 68%);pointer-events:none;z-index:-1;animation:doaGlow 4.5s ease-in-out infinite}
+.doa-reveal.ayat-in .doa-reveal-inner{opacity:1;transform:translateY(0) scale(1)}
+.doa-ayat-ar{font-family:'Noto Naskh Arabic',Georgia,serif;font-size:26px;color:var(--gold);line-height:2;margin-bottom:18px;text-shadow:0 0 22px rgba(227,184,94,.3)}
+.doa-ayat-tr{font-family:'Lora',Georgia,serif;font-style:italic;font-size:15px;color:var(--text);line-height:1.7;margin-bottom:14px}
+.doa-ayat-src{position:relative;display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.doa-ayat-src::after{content:'';position:absolute;left:0;right:0;bottom:-9px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 1s ease .5s}
+.doa-reveal.ayat-in .doa-ayat-src::after{transform:scaleX(1)}
+@keyframes doaGlow{0%,100%{opacity:.45;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.14)}}
 
 /* History */
 .history-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;animation:fadeUp .35s ease both}
@@ -521,7 +544,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   </div>
   <div class="doa-compose" id="doa-compose">
     <textarea class="doa-input" id="doa-input" placeholder="Ya Allah..." rows="6"></textarea>
-    <button class="doa-send" id="doa-send" onclick="sendDoa()">Hantar 🤲</button>
+    <button class="doa-send" id="doa-send" onclick="sendDoa()"><span>Hantar</span><svg class="doa-send-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M11.4 12V9.2a1.3 1.3 0 0 0-2.6 0v3.6L7.5 11.4c-.6-.7-1.6-.8-2.3-.3-.7.6-.8 1.6-.2 2.3l3.1 3.5c1 1.1 2.4 1.7 3.9 1.7"/><path d="M12.6 12V9.2a1.3 1.3 0 0 1 2.6 0v3.6l1.3-1.4c.6-.7 1.6-.8 2.3-.3.7.6.8 1.6.2 2.3l-3.1 3.5c-1 1.1-2.4 1.7-3.9 1.7"/><circle cx="12" cy="6" r="1" fill="currentColor" stroke="none"/></svg></button>
   </div>
   <div class="section-label" style="margin-top:30px">Arkib bisikan</div>
   <div id="doa-archive"></div>
@@ -1645,15 +1668,42 @@ function renderDoaArchive() {
     const datestr = dt.toLocaleDateString("ms-MY", { day:"numeric", month:"long" }) + " · " +
       dt.toLocaleTimeString("ms-MY", { hour:"2-digit", minute:"2-digit" });
     const done = d.status === "termakbul";
-    return `<div class="doa-arch-card${done ? " fulfilled" : ""}">
+    return `<div class="doa-arch-card${done ? " fulfilled" : ""}" data-id="${d.id}">
       <div class="doa-arch-top">
         <span class="doa-arch-date">${datestr}</span>
-        ${d.mood ? `<span class="doa-arch-mood">${escHtml(d.mood)}</span>` : ""}
+        <div class="doa-arch-actions">
+          ${d.mood ? `<span class="doa-arch-mood">${escHtml(d.mood)}</span>` : ""}
+          <button class="doa-del" onclick="askDeleteDoa(${d.id})" aria-label="Padam bisikan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg></button>
+        </div>
       </div>
       <div class="doa-arch-text">${escHtml(d.text)}</div>
       <button class="doa-termakbul${done ? " done" : ""}" onclick="toggleTermakbul(${d.id})">${done ? "Alhamdulillah ✓" : "Termakbul ✓"}</button>
+      <div class="doa-del-confirm">
+        <span class="doa-del-q">Padam bisikan ni?</span>
+        <div class="doa-del-row">
+          <button class="doa-del-no" onclick="cancelDeleteDoa(${d.id})">Batal</button>
+          <button class="doa-del-yes" onclick="confirmDeleteDoa(${d.id})">Padam</button>
+        </div>
+      </div>
     </div>`;
   }).join("");
+}
+
+function doaCardEl(id) { return document.querySelector(`.doa-arch-card[data-id="${id}"]`); }
+
+function askDeleteDoa(id) {
+  const card = doaCardEl(id);
+  if (card) card.classList.add("confirming");
+}
+function cancelDeleteDoa(id) {
+  const card = doaCardEl(id);
+  if (card) card.classList.remove("confirming");
+}
+function confirmDeleteDoa(id) {
+  const card = doaCardEl(id);
+  const done = () => { doaList = doaList.filter(x => x.id !== id); saveDoa(); renderDoaArchive(); };
+  if (card) { card.classList.remove("confirming"); card.classList.add("removing"); setTimeout(done, 360); }
+  else done();
 }
 
 function toggleTermakbul(id) {
@@ -1675,23 +1725,43 @@ function sendDoa() {
   doaList.push({ id: Date.now(), date: new Date().toISOString(), text, status: "pending", mood: doaTodayMood() });
   saveDoa();
 
-  // Option A — doa text fades up & away
+  // Option A — doa text fades up & away, dissolving into rising light
+  const compose = document.getElementById("doa-compose");
   const ghost = document.createElement("div");
   ghost.className = "doa-ghost";
   ghost.textContent = text;
-  document.getElementById("doa-compose").appendChild(ghost);
+  compose.appendChild(ghost);
   ta.value = "";
   ta.blur();
   requestAnimationFrame(() => ghost.classList.add("rise"));
-  setTimeout(() => ghost.remove(), 1700);
+  setTimeout(() => ghost.remove(), 1900);
+  spawnDoaParticles(compose);
 
   // Dark dip + reveal the ayat, then brighten back
   const rev = document.getElementById("doa-reveal");
-  setTimeout(() => rev.classList.add("show"), 650);
-  setTimeout(() => rev.classList.add("ayat-in"), 1150);
-  setTimeout(() => rev.classList.remove("ayat-in"), 4400);
-  setTimeout(() => rev.classList.remove("show"), 5200);
-  setTimeout(() => { renderDoaArchive(); doaSending = false; }, 5400);
+  setTimeout(() => rev.classList.add("show"), 950);
+  setTimeout(() => rev.classList.add("ayat-in"), 1500);
+  setTimeout(() => rev.classList.remove("ayat-in"), 4800);
+  setTimeout(() => rev.classList.remove("show"), 5700);
+  setTimeout(() => { renderDoaArchive(); doaSending = false; }, 5950);
+}
+
+function spawnDoaParticles(host) {
+  const N = 20;
+  for (let i = 0; i < N; i++) {
+    const sp = document.createElement("span");
+    sp.className = "doa-particle";
+    const size = 3 + Math.random() * 4;
+    const rise = 150 + Math.random() * 130;
+    const dx = Math.random() * 50 - 25;
+    const dur = 1.3 + Math.random() * 1.2;
+    const delay = Math.random() * 0.55;
+    sp.style.cssText = `left:${8 + Math.random() * 84}%;top:${34 + Math.random() * 16}%;` +
+      `width:${size}px;height:${size}px;color:${i % 2 ? "var(--gold)" : "var(--teal)"};` +
+      `--dx:${dx}px;--rise:-${rise}px;animation-duration:${dur}s;animation-delay:${delay}s`;
+    host.appendChild(sp);
+    setTimeout(() => sp.remove(), (dur + delay) * 1000 + 120);
+  }
 }
 
 // ── History ───────────────────────────────────────────────
