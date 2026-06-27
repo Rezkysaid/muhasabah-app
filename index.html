@@ -280,6 +280,38 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 @keyframes tasbihPulse{0%{box-shadow:0 0 0 0 rgba(240,168,104,.4),inset 0 0 26px rgba(240,168,104,.08)}100%{box-shadow:0 0 0 20px rgba(240,168,104,0),inset 0 0 26px rgba(240,168,104,.08)}}
 @keyframes tasbihDone{0%,100%{transform:scale(1)}45%{transform:scale(1.05)}}
 
+/* Bantuan Segera — entry strip in Tenangkan Hati hub */
+.sos-strip{display:flex;align-items:center;gap:13px;background:linear-gradient(150deg,color-mix(in srgb,var(--rose) 9%,var(--card)),var(--card));border:1px solid color-mix(in srgb,var(--rose) 22%,var(--border));border-radius:16px;padding:14px 15px;margin-top:18px;cursor:pointer;transition:transform .15s,border-color .2s;-webkit-tap-highlight-color:transparent}
+.sos-strip:active{transform:scale(.98)}
+.sos-ico{flex-shrink:0;width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--rose) 15%,transparent);border:1px solid color-mix(in srgb,var(--rose) 28%,transparent);color:var(--rose)}
+.sos-ico svg{width:19px;height:19px;display:block}
+.sos-text{flex:1;min-width:0}
+.sos-title{font-size:14px;font-weight:600;color:var(--text)}
+.sos-sub{font-size:12px;color:var(--soft);line-height:1.45;margin-top:2px}
+.sos-strip .hub-chevron{opacity:.5}
+
+/* Bantuan Segera — support screen */
+.bantuan-intro{font-size:14px;color:var(--soft);line-height:1.7;margin:2px 0 18px}
+.bantuan-ayat{position:relative;background:rgba(201,168,76,.07);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:24px}
+.bantuan-ayat-text{font-family:'Lora',Georgia,serif;font-style:italic;font-size:15px;color:var(--text);line-height:1.65}
+.bantuan-ayat-src{font-size:11px;color:var(--gold);margin-top:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.help-line{display:flex;align-items:center;gap:14px;text-decoration:none;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px 16px;margin-bottom:12px;transition:transform .15s,border-color .2s;-webkit-tap-highlight-color:transparent}
+.help-line:active{transform:scale(.98)}
+.help-line.urgent{border-color:color-mix(in srgb,var(--danger) 40%,var(--border));background:color-mix(in srgb,var(--danger) 7%,var(--card))}
+.help-ico{flex-shrink:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--teal) 14%,transparent);border:1px solid color-mix(in srgb,var(--teal) 26%,transparent);color:var(--teal)}
+.help-ico svg{width:20px;height:20px;display:block}
+.help-line.urgent .help-ico{background:color-mix(in srgb,var(--danger) 14%,transparent);border-color:color-mix(in srgb,var(--danger) 30%,transparent);color:var(--danger)}
+.help-body{flex:1;min-width:0}
+.help-name{font-size:15px;font-weight:600;color:var(--text)}
+.help-num{font-size:13.5px;color:var(--teal);font-weight:600;margin-top:1px;font-variant-numeric:tabular-nums}
+.help-line.urgent .help-num{color:var(--danger)}
+.help-desc{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.help-wa{display:inline-block;margin:-4px 0 12px 74px;font-size:11.5px;font-weight:600;color:var(--teal);text-decoration:none;border:1px solid color-mix(in srgb,var(--teal) 30%,transparent);border-radius:20px;padding:4px 12px;-webkit-tap-highlight-color:transparent}
+.help-wa:active{background:color-mix(in srgb,var(--teal) 12%,transparent)}
+.help-call{flex-shrink:0;width:18px;height:18px;color:var(--muted);opacity:.55}
+.help-call svg{width:100%;height:100%;display:block}
+.bantuan-note{font-size:12px;color:var(--muted);line-height:1.65;text-align:center;margin-top:16px}
+
 /* Typing */
 .typing{display:flex;align-items:flex-end;gap:8px;animation:fadeUp .25s ease}
 .typing-dots{display:flex;gap:4px;padding:13px 16px;background:var(--card);border:1px solid var(--border);border-radius:4px 16px 16px 16px;width:fit-content;box-shadow:0 2px 10px rgba(0,0,0,.18)}
@@ -510,6 +542,14 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     <textarea class="niat-input" id="anxiety-note" rows="3" placeholder="(Pilihan) Cerita ringkas apa yang berlaku..." style="margin-top:12px"></textarea>
     <button class="btn-primary active btn-pulse" id="anxiety-log-btn" onclick="saveAnxietyLog()">Simpan & Teruskan</button>
   </div>
+  <div class="sos-strip" onclick="showScreen('bantuan')">
+    <span class="sos-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 20s-7-4.4-9.2-9C1.3 8 2.6 4.8 5.6 4.2 7.5 3.8 9.4 4.7 12 7.3c2.6-2.6 4.5-3.5 6.4-3.1 3 .6 4.3 3.8 2.8 6.8C19 15.6 12 20 12 20z"/></svg></span>
+    <div class="sos-text">
+      <div class="sos-title">Rasa terlalu berat?</div>
+      <div class="sos-sub">Kau tak perlu hadap sendiri — cakap dengan seseorang sekarang.</div>
+    </div>
+    <span class="hub-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 5l7 7-7 7"/></svg></span>
+  </div>
   <div style="height:24px"></div>
 </div>
 
@@ -650,6 +690,61 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   </div>
   <div class="section-label" style="margin-top:26px">Semua zikir penenang</div>
   <div id="wirid-list"></div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- BANTUAN SEGERA -->
+<div class="screen" id="screen-bantuan">
+  <div class="chat-header">
+    <button class="back-btn" onclick="showScreen('anxiety')">←</button>
+    <div>
+      <div class="chat-title">Bantuan Segera</div>
+      <div class="chat-sub">Kau tak keseorangan</div>
+    </div>
+  </div>
+  <div class="bantuan-intro">Kalau sekarang rasa terlalu berat — sampai susah nak nafas, atau fikiran jadi gelap — kau tak perlu hadap sendiri. Cakap dengan seseorang yang terlatih untuk dengar dan bantu. Tak kira jam berapa.</div>
+  <div class="bantuan-ayat">
+    <div class="bantuan-ayat-text">"Janganlah kamu berputus asa daripada rahmat Allah. Sesungguhnya Allah mengampunkan segala dosa."</div>
+    <div class="bantuan-ayat-src">— Az-Zumar: 53</div>
+  </div>
+  <a class="help-line" href="tel:15555">
+    <span class="help-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 3h-2A1.5 1.5 0 003 4.6C3 13 11 21 19.4 21A1.5 1.5 0 0021 19.5v-2a1 1 0 00-.8-1l-3-.6a1 1 0 00-1 .4l-.9 1.2a13 13 0 01-5.8-5.8l1.2-.9a1 1 0 00.4-1l-.6-3a1 1 0 00-1-.8z"/></svg></span>
+    <div class="help-body">
+      <div class="help-name">Talian HEAL 15555</div>
+      <div class="help-num">15555</div>
+      <div class="help-desc">Talian kesihatan mental Kementerian Kesihatan (KKM).</div>
+    </div>
+    <span class="help-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 5l7 7-7 7"/></svg></span>
+  </a>
+  <a class="help-line" href="tel:15999" style="margin-bottom:8px">
+    <span class="help-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 3h-2A1.5 1.5 0 003 4.6C3 13 11 21 19.4 21A1.5 1.5 0 0021 19.5v-2a1 1 0 00-.8-1l-3-.6a1 1 0 00-1 .4l-.9 1.2a13 13 0 01-5.8-5.8l1.2-.9a1 1 0 00.4-1l-.6-3a1 1 0 00-1-.8z"/></svg></span>
+    <div class="help-body">
+      <div class="help-name">Talian Kasih 15999</div>
+      <div class="help-num">15999</div>
+      <div class="help-desc">Sokongan 24 jam, percuma & sulit.</div>
+    </div>
+    <span class="help-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 5l7 7-7 7"/></svg></span>
+  </a>
+  <a class="help-wa" href="https://wa.me/60192615999">WhatsApp Talian Kasih · 019-261 5999</a>
+  <a class="help-line" href="tel:0376272929">
+    <span class="help-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 3h-2A1.5 1.5 0 003 4.6C3 13 11 21 19.4 21A1.5 1.5 0 0021 19.5v-2a1 1 0 00-.8-1l-3-.6a1 1 0 00-1 .4l-.9 1.2a13 13 0 01-5.8-5.8l1.2-.9a1 1 0 00.4-1l-.6-3a1 1 0 00-1-.8z"/></svg></span>
+    <div class="help-body">
+      <div class="help-name">Befrienders KL</div>
+      <div class="help-num">03-7627 2929</div>
+      <div class="help-desc">Sokongan emosi 24 jam untuk sesiapa yang rasa keseorangan atau putus harapan.</div>
+    </div>
+    <span class="help-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 5l7 7-7 7"/></svg></span>
+  </a>
+  <a class="help-line urgent" href="tel:999">
+    <span class="help-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span>
+    <div class="help-body">
+      <div class="help-name">Kecemasan 999</div>
+      <div class="help-num">999</div>
+      <div class="help-desc">Kalau kau atau sesiapa dalam bahaya segera.</div>
+    </div>
+    <span class="help-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 5l7 7-7 7"/></svg></span>
+  </a>
+  <div class="bantuan-note">Minta tolong bukan tanda lemah — ia tanda kau masih berjuang. Allah tak bagi kau ujian tanpa jalan keluar.</div>
   <div style="height:24px"></div>
 </div>
 
