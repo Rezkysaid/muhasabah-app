@@ -125,6 +125,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .anxiety-hub-card.hub-gold{--accent:var(--gold)}
 .anxiety-hub-card.hub-rose{--accent:var(--rose)}
 .anxiety-hub-card.hub-violet{--accent:var(--violet)}
+.anxiety-hub-card.hub-amber{--accent:var(--amber)}
 .hub-ico{flex-shrink:0;width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 15%,transparent);border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
 .hub-ico .card-icon{width:19px;height:19px;margin:0;color:var(--accent)}
 .hub-text{flex:1;min-width:0}
@@ -241,6 +242,43 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .doa-social-body p{font-family:'Lora',Georgia,serif;font-style:italic;font-size:14.5px;font-weight:400;color:var(--text);line-height:1.75;margin:0 0 13px}
 .doa-social-body p:last-child{margin-bottom:0}
 .doa-social-amin{font-family:'Caveat',cursive;font-size:24px;color:var(--gold);text-align:right;margin-top:6px;letter-spacing:.01em}
+
+/* Wirid Tenang — interactive tasbih + zikir list */
+.wirid-intro{font-size:13px;color:var(--soft);line-height:1.65;margin:2px 0 18px}
+.wirid-intro b{color:var(--amber);font-weight:600;font-style:italic;font-family:'Lora',Georgia,serif}
+.wirid-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.wirid-chip{padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s,transform .15s}
+.wirid-chip:active{transform:scale(.93)}
+.wirid-chip.selected{background:color-mix(in srgb,var(--amber) 12%,transparent);border-color:var(--amber);color:var(--amber);animation:moodPop .35s ease}
+.wirid-tasbih{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:6px}
+.tasbih-dial{position:relative;width:232px;height:232px}
+.tasbih-dial.done{animation:tasbihDone .55s ease}
+.tasbih-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.tasbih-ring circle{fill:none;stroke-width:5}
+.tasbih-track{stroke:var(--border)}
+.tasbih-prog{stroke:var(--amber);stroke-linecap:round;filter:drop-shadow(0 0 5px rgba(240,168,104,.4));transition:stroke-dashoffset .55s cubic-bezier(.22,.61,.36,1)}
+.tasbih-btn{position:absolute;inset:22px;border-radius:50%;border:1px solid color-mix(in srgb,var(--amber) 30%,var(--border));
+  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.08),transparent 45%),radial-gradient(circle,rgba(240,168,104,.12),rgba(240,168,104,.03) 72%,transparent);
+  box-shadow:0 0 32px -8px rgba(240,168,104,.35),inset 0 0 26px rgba(240,168,104,.08);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:transform .12s ease}
+.tasbih-btn:active{transform:scale(.955)}
+.tasbih-btn.pulse{animation:tasbihPulse .5s ease}
+.tasbih-count{font-size:54px;font-weight:300;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+.tasbih-target{font-size:13px;color:var(--muted);margin-top:4px;letter-spacing:.03em}
+.tasbih-ar{font-family:'Noto Naskh Arabic',Georgia,serif;font-size:19px;color:var(--amber);margin-top:9px;line-height:1}
+.wirid-rumi{font-size:15px;font-weight:600;color:var(--text);margin-top:14px;text-align:center}
+.wirid-makna{font-size:12.5px;color:var(--soft);font-style:italic;line-height:1.55;text-align:center;max-width:280px;margin:5px auto 0}
+.wirid-rounds{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);text-align:center;margin-top:16px;min-height:14px;transition:opacity .3s}
+.wirid-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+.wirid-reset{display:block;margin:14px auto 0;background:transparent;border:none;color:var(--muted);font-size:12px;font-family:inherit;cursor:pointer;letter-spacing:.04em;text-decoration:underline;text-underline-offset:3px;opacity:.7}
+.wirid-reset:active{opacity:1}
+.wirid-list-card{background:rgba(240,168,104,.05);border:1px solid color-mix(in srgb,var(--amber) 20%,var(--border));border-radius:12px;padding:13px 15px;margin-bottom:10px}
+.wirid-list-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.wirid-list-rumi{font-size:13.5px;font-weight:600;color:var(--text)}
+.wirid-list-ar{font-family:'Noto Naskh Arabic',Georgia,serif;font-size:16px;color:var(--amber);text-align:right}
+.wirid-list-makna{font-size:12px;color:var(--soft);font-style:italic;line-height:1.55;margin-top:6px}
+@keyframes tasbihPulse{0%{box-shadow:0 0 0 0 rgba(240,168,104,.4),inset 0 0 26px rgba(240,168,104,.08)}100%{box-shadow:0 0 0 20px rgba(240,168,104,0),inset 0 0 26px rgba(240,168,104,.08)}}
+@keyframes tasbihDone{0%,100%{transform:scale(1)}45%{transform:scale(1.05)}}
 
 /* Typing */
 .typing{display:flex;align-items:flex-end;gap:8px;animation:fadeUp .25s ease}
@@ -427,6 +465,14 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
     <span class="hub-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 5l7 7-7 7"/></svg></span>
   </div>
+  <div class="card anxiety-hub-card hub-amber" onclick="showScreen('wirid')">
+    <span class="hub-ico"><span class="card-icon" id="hub-icon-wirid"></span></span>
+    <div class="hub-text">
+      <div class="hub-title">Wirid Tenang</div>
+      <div class="hub-desc">Tasbih digital — kira zikir, fokus, biar hati turun perlahan.</div>
+    </div>
+    <span class="hub-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 5l7 7-7 7"/></svg></span>
+  </div>
   <div class="card anxiety-hub-card hub-gold" onclick="showScreen('ayat-tenang')">
     <span class="hub-ico"><span class="card-icon" id="hub-icon-ayat"></span></span>
     <div class="hub-text">
@@ -574,6 +620,39 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   <div id="doa-cemas-list"></div>
 </div>
 
+<!-- WIRID TENANG -->
+<div class="screen" id="screen-wirid">
+  <div class="chat-header">
+    <button class="back-btn" onclick="leaveWirid()">←</button>
+    <div>
+      <div class="chat-title">Wirid Tenang</div>
+      <div class="chat-sub">Kira zikir, turunkan hati</div>
+    </div>
+  </div>
+  <div class="wirid-intro">Hati jadi tenang dengan mengingati Allah. <b>Ketik bulatan</b> setiap kali kau sebut zikir — fokus pada satu, biar yang lain reda.</div>
+  <div class="wirid-chips" id="wirid-chips"></div>
+  <div class="wirid-tasbih">
+    <div class="tasbih-dial" id="tasbih-dial">
+      <svg class="tasbih-ring" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <circle class="tasbih-track" cx="60" cy="60" r="54"></circle>
+        <circle class="tasbih-prog" id="tasbih-prog" cx="60" cy="60" r="54" stroke-dasharray="339.292" stroke-dashoffset="339.292"></circle>
+      </svg>
+      <button class="tasbih-btn" id="tasbih-btn" onclick="tapTasbih()">
+        <span class="tasbih-count" id="tasbih-count">0</span>
+        <span class="tasbih-target" id="tasbih-target">/ 33</span>
+        <span class="tasbih-ar" id="tasbih-ar"></span>
+      </button>
+    </div>
+    <div class="wirid-rumi" id="wirid-rumi"></div>
+    <div class="wirid-makna" id="wirid-makna"></div>
+    <div class="wirid-rounds" id="wirid-rounds"></div>
+    <button class="wirid-reset" onclick="resetTasbih()">Set semula kiraan</button>
+  </div>
+  <div class="section-label" style="margin-top:26px">Semua zikir penenang</div>
+  <div id="wirid-list"></div>
+  <div style="height:24px"></div>
+</div>
+
 <!-- HISTORY -->
 <div class="screen" id="screen-history">
   <div style="padding:calc(24px + env(safe-area-inset-top)) 0 16px;position:relative;z-index:1">
@@ -624,6 +703,7 @@ const WIND_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const DUA_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M7 20c0-5.5 1.8-9 1.8-13a3.2 3.2 0 116.4 0c0 4 1.8 7.5 1.8 13"/><path d="M6 20h12"/></svg>`;
 const CHAT_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 19l1.2-3.6A8 8 0 1112 20a8.4 8.4 0 01-4-1L4 19z"/></svg>`;
 const SOCIAL_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9" r="2.4" opacity=".55"/><path d="M15.8 20c0-2.3 1.3-4.3 3.2-5.3" opacity=".55"/></svg>`;
+const TASBIH_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="4.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="19.5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>`;
 
 // ── State ─────────────────────────────────────────────────
 let selectedMood = null;
@@ -679,6 +759,15 @@ const DOA_CEMAS = [
   { arabic:"رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي", translation:"Wahai Tuhanku, lapangkanlah dadaku, dan permudahkanlah urusanku.", source:"Doa Nabi Musa — Taha: 25-26" },
 ];
 const ZIKIR_LIST = ["Astaghfirullah", "Lā ḥawla walā quwwata illā billāh", "Hasbunallahu wa ni'mal wakīl", "Subhanallah"];
+const WIRID_ZIKIR = [
+  { ar:"سُبْحَانَ ٱللَّٰه", rumi:"Subhānallāh", makna:"Maha Suci Allah — lepaskan beban, akui Dia Maha Sempurna.", target:33 },
+  { ar:"ٱلْحَمْدُ لِلَّٰه", rumi:"Alhamdulillāh", makna:"Segala puji bagi Allah — syukur menurunkan hati yang resah.", target:33 },
+  { ar:"ٱللَّٰهُ أَكْبَر", rumi:"Allāhu Akbar", makna:"Allah Maha Besar — masalah jadi kecil bila ingat kebesaran-Nya.", target:33 },
+  { ar:"لَا إِلَٰهَ إِلَّا ٱللَّٰه", rumi:"Lā ilāha illallāh", makna:"Tiada Tuhan melainkan Allah — kembalikan hati pada satu tempat bergantung.", target:33 },
+  { ar:"أَسْتَغْفِرُ ٱللَّٰه", rumi:"Astaghfirullāh", makna:"Aku mohon ampun Allah — lapangkan dada, lepaskan rasa bersalah.", target:33 },
+  { ar:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّٰه", rumi:"Lā ḥawla walā quwwata illā billāh", makna:"Tiada daya & upaya kecuali dengan Allah — berhenti memikul semua sendiri.", target:33 },
+  { ar:"حَسْبُنَا ٱللَّٰهُ وَنِعْمَ ٱلْوَكِيل", rumi:"Ḥasbunallāhu wa ni'mal wakīl", makna:"Cukuplah Allah bagi kami, sebaik-baik penolong — serahkan yang di luar kawalan.", target:33 },
+];
 const DAILY_QUOTES = [
   { text:"Iaitu orang-orang yang beriman dan tenang tenteram hati mereka dengan mengingati Allah.", source:"Ar-Ra'd: 28" },
   { text:"Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya.", source:"Al-Baqarah: 286" },
@@ -774,6 +863,9 @@ function init() {
   document.getElementById("hub-icon-doa").innerHTML = DUA_ICON;
   document.getElementById("hub-icon-chat").innerHTML = CHAT_ICON;
   document.getElementById("hub-icon-social").innerHTML = SOCIAL_ICON;
+  document.getElementById("hub-icon-wirid").innerHTML = TASBIH_ICON;
+  renderWiridChips();
+  renderWiridList();
   renderStaticAyahList("ayat-tenang-list", AYAT_TENANG);
   renderStaticAyahList("doa-cemas-list", DOA_CEMAS);
   updateStreak();
@@ -863,6 +955,7 @@ function showScreen(name) {
     void grid.offsetWidth;
     grid.classList.add("chips-in");
   }
+  if (name === "wirid") openWirid();
   if (name === "home") {
     // "Mulakan Muhasabah" hanya boleh ditekan kalau ada mood dipilih.
     // Jalan pintas direct-chat ("Umum") tak kira sebagai mood — reset bila balik home.
@@ -1244,6 +1337,104 @@ function finishBreathing(feeling) {
   showScreen("anxiety");
 }
 
+// ── Wirid Tenang: digital tasbih ──────────────────────────
+const TASBIH_CIRC = 339.292; // 2πr, r=54
+let wiridIdx = 0;
+let wiridCount = 0;
+let wiridRounds = 0;        // jumlah pusingan tersimpan
+let wiridSessionRounds = 0; // pusingan untuk lawatan ni je (untuk Sejarah)
+
+function loadWiridState() {
+  try {
+    const raw = JSON.parse(localStorage.getItem("mhsb_wirid") || "{}");
+    wiridIdx = Math.min(Math.max(raw.idx|0, 0), WIRID_ZIKIR.length - 1);
+    wiridCount = raw.count|0;
+    wiridRounds = raw.rounds|0;
+  } catch(e) { wiridIdx = 0; wiridCount = 0; wiridRounds = 0; }
+}
+function saveWiridState() {
+  try { localStorage.setItem("mhsb_wirid", JSON.stringify({ idx: wiridIdx, count: wiridCount, rounds: wiridRounds })); } catch(e) {}
+}
+
+function renderWiridChips() {
+  document.getElementById("wirid-chips").innerHTML = WIRID_ZIKIR.map((z, i) =>
+    `<button class="wirid-chip" data-idx="${i}" onclick="selectWiridZikir(${i})">${z.rumi}</button>`).join("");
+}
+function renderWiridList() {
+  document.getElementById("wirid-list").innerHTML = WIRID_ZIKIR.map(z => `
+    <div class="wirid-list-card">
+      <div class="wirid-list-top"><span class="wirid-list-rumi">${z.rumi}</span><span class="wirid-list-ar">${z.ar}</span></div>
+      <div class="wirid-list-makna">${z.makna}</div>
+    </div>`).join("");
+}
+
+function openWirid() {
+  loadWiridState();
+  wiridSessionRounds = 0;
+  updateTasbihUI(false);
+}
+
+function updateTasbihUI(animateRing) {
+  const z = WIRID_ZIKIR[wiridIdx];
+  document.getElementById("tasbih-count").textContent = wiridCount;
+  document.getElementById("tasbih-target").textContent = "/ " + z.target;
+  document.getElementById("tasbih-ar").textContent = z.ar;
+  document.getElementById("wirid-rumi").textContent = z.rumi;
+  document.getElementById("wirid-makna").textContent = z.makna;
+  const r = document.getElementById("wirid-rounds");
+  r.textContent = wiridRounds > 0 ? `${wiridRounds} pusingan selesai` : "";
+  const prog = document.getElementById("tasbih-prog");
+  if (!animateRing) prog.style.transition = "none";
+  prog.style.strokeDashoffset = TASBIH_CIRC * (1 - wiridCount / z.target);
+  if (!animateRing) { void prog.getBoundingClientRect(); prog.style.transition = ""; }
+  document.querySelectorAll("#wirid-chips .wirid-chip").forEach(c =>
+    c.classList.toggle("selected", +c.dataset.idx === wiridIdx));
+}
+
+function selectWiridZikir(i) {
+  if (i === wiridIdx) return;
+  wiridIdx = i;
+  wiridCount = 0;
+  saveWiridState();
+  updateTasbihUI(true);
+}
+
+function tapTasbih() {
+  const z = WIRID_ZIKIR[wiridIdx];
+  wiridCount++;
+  const btn = document.getElementById("tasbih-btn");
+  btn.classList.remove("pulse"); void btn.offsetWidth; btn.classList.add("pulse");
+  if (navigator.vibrate) { try { navigator.vibrate(8); } catch(e) {} }
+  if (wiridCount >= z.target) {
+    wiridRounds++;
+    wiridSessionRounds++;
+    const dial = document.getElementById("tasbih-dial");
+    dial.classList.remove("done"); void dial.offsetWidth; dial.classList.add("done");
+    if (navigator.vibrate) { try { navigator.vibrate([12, 40, 12]); } catch(e) {} }
+    updateTasbihUI(true);
+    saveWiridState();
+    setTimeout(() => { wiridCount = 0; updateTasbihUI(false); saveWiridState(); }, 650);
+    return;
+  }
+  updateTasbihUI(true);
+  saveWiridState();
+}
+
+function resetTasbih() {
+  wiridCount = 0;
+  saveWiridState();
+  updateTasbihUI(true);
+}
+
+function leaveWirid() {
+  if (wiridSessionRounds > 0) {
+    sessions.push({ id: Date.now(), date: new Date().toISOString(), type: "wirid", zikir: WIRID_ZIKIR[wiridIdx].rumi, rounds: wiridSessionRounds });
+    saveSessions();
+    wiridSessionRounds = 0;
+  }
+  showScreen("anxiety");
+}
+
 // ── History ───────────────────────────────────────────────
 function renderHistory() {
   const list = document.getElementById("history-list");
@@ -1286,6 +1477,14 @@ function renderHistory() {
           <div class="history-mood"><span class="history-mood-icon">${SOCIAL_ICON}</span><span style="font-size:13px;color:var(--soft)">Cabaran Sosial</span></div>
           <div style="font-size:12px;color:var(--muted);margin-top:4px">${s.situation}</div>
           ${s.reflection ? `<div class="history-niat">${s.reflection}</div>` : ""}
+        </div>`;
+    }
+    if (s.type === "wirid") {
+      return `
+        <div class="history-item" style="animation-delay:${delay}s">
+          <div class="history-date">${d}</div>
+          <div class="history-mood"><span class="history-mood-icon">${TASBIH_ICON}</span><span style="font-size:13px;color:var(--soft)">Wirid Tenang</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">${s.rounds} pusingan · ${s.zikir}</div>
         </div>`;
     }
     const st = statusMap[s.niatStatus] || statusMap.pending;
