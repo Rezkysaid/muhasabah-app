@@ -398,7 +398,20 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 @keyframes doaGlow{0%,100%{opacity:.45;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.14)}}
 
 /* History */
-.history-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;animation:fadeUp .35s ease both}
+.history-item{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;animation:fadeUp .35s ease both;transition:opacity .35s ease,transform .35s ease}
+.history-item.removing{opacity:0;transform:translateX(-22px) scale(.96)}
+.hist-del{position:absolute;top:11px;right:11px;width:27px;height:27px;display:flex;align-items:center;justify-content:center;padding:0;background:transparent;border:none;color:var(--muted);opacity:.6;cursor:pointer;border-radius:8px;transition:color .2s,background .2s,opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent}
+.hist-del svg{width:15px;height:15px;display:block}
+.hist-del:active{transform:scale(.88)}
+.hist-del:hover{color:var(--danger);opacity:1;background:color-mix(in srgb,var(--danger) 10%,transparent)}
+.hist-del-confirm{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(12,14,20,.94);border-radius:14px;opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:5}
+.history-item.confirming .hist-del-confirm{opacity:1;pointer-events:auto}
+.hist-del-q{font-size:13px;color:var(--soft);font-style:italic}
+.hist-del-row{display:flex;gap:10px}
+.hist-del-no,.hist-del-yes{padding:6px 17px;border-radius:18px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:transform .15s;border:1px solid var(--border);background:transparent}
+.hist-del-no{color:var(--muted)}
+.hist-del-no:active,.hist-del-yes:active{transform:scale(.94)}
+.hist-del-yes{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,transparent);background:color-mix(in srgb,var(--danger) 10%,transparent)}
 .history-date{font-size:11px;color:var(--muted);margin-bottom:5px}
 .history-mood{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .history-niat{font-size:13px;color:var(--text);font-style:italic;line-height:1.5;border-left:2px solid var(--teal-dim);padding-left:10px;margin-top:6px}
@@ -1782,50 +1795,61 @@ function renderHistory() {
   list.innerHTML = sorted.map((s, i) => {
     const delay = Math.min(i, 8) * 0.05;
     const d = new Date(s.date).toLocaleDateString("ms-MY",{weekday:"long",day:"numeric",month:"long"});
+    let inner;
     if (s.type === "anxiety") {
-      return `
-        <div class="history-item" style="animation-delay:${delay}s">
+      inner = `
           <div class="history-date">${d}</div>
           <div class="history-mood"><span style="font-size:16px">🌬️</span><span style="font-size:13px;color:var(--soft)">Sesi Tenangkan Hati</span></div>
           ${s.tags && s.tags.length ? `<div style="font-size:12px;color:var(--muted);margin-top:4px">${s.tags.join(" · ")}</div>` : ""}
-          ${s.note ? `<div class="history-niat">${s.note}</div>` : ""}
-        </div>`;
-    }
-    if (s.type === "breathing") {
-      return `
-        <div class="history-item" style="animation-delay:${delay}s">
+          ${s.note ? `<div class="history-niat">${s.note}</div>` : ""}`;
+    } else if (s.type === "breathing") {
+      inner = `
           <div class="history-date">${d}</div>
           <div class="history-mood"><span style="font-size:16px">🌬️</span><span style="font-size:13px;color:var(--soft)">Latihan Nafas 4-7-8</span></div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">${feelMap[s.feeling]||""}</div>
-        </div>`;
-    }
-    if (s.type === "social") {
-      return `
-        <div class="history-item" style="animation-delay:${delay}s">
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">${feelMap[s.feeling]||""}</div>`;
+    } else if (s.type === "social") {
+      inner = `
           <div class="history-date">${d}</div>
           <div class="history-mood"><span class="history-mood-icon">${SOCIAL_ICON}</span><span style="font-size:13px;color:var(--soft)">Cabaran Sosial</span></div>
           <div style="font-size:12px;color:var(--muted);margin-top:4px">${s.situation}</div>
-          ${s.reflection ? `<div class="history-niat">${s.reflection}</div>` : ""}
-        </div>`;
-    }
-    if (s.type === "wirid") {
-      return `
-        <div class="history-item" style="animation-delay:${delay}s">
+          ${s.reflection ? `<div class="history-niat">${s.reflection}</div>` : ""}`;
+    } else if (s.type === "wirid") {
+      inner = `
           <div class="history-date">${d}</div>
           <div class="history-mood"><span class="history-mood-icon">${TASBIH_ICON}</span><span style="font-size:13px;color:var(--soft)">Wirid Tenang</span></div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">${s.rounds} pusingan · ${s.zikir}</div>
-        </div>`;
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">${s.rounds} pusingan · ${s.zikir}</div>`;
+    } else {
+      const st = statusMap[s.niatStatus] || statusMap.pending;
+      inner = `
+          <div class="history-date">${d}</div>
+          <div class="history-mood"><span class="history-mood-icon">${MOOD_ICON[s.mood]||""}</span><span style="font-size:13px;color:var(--soft)">${s.mood}</span></div>
+          ${s.niat
+            ? `<div class="history-niat">${s.niat}</div><div class="history-status ${st.cls}">${st.lbl}</div>`
+            : `<div style="font-size:12px;color:var(--muted);margin-top:4px">Tiada niat ditetapkan</div>`}`;
     }
-    const st = statusMap[s.niatStatus] || statusMap.pending;
     return `
-      <div class="history-item" style="animation-delay:${delay}s">
-        <div class="history-date">${d}</div>
-        <div class="history-mood"><span class="history-mood-icon">${MOOD_ICON[s.mood]||""}</span><span style="font-size:13px;color:var(--soft)">${s.mood}</span></div>
-        ${s.niat
-          ? `<div class="history-niat">${s.niat}</div><div class="history-status ${st.cls}">${st.lbl}</div>`
-          : `<div style="font-size:12px;color:var(--muted);margin-top:4px">Tiada niat ditetapkan</div>`}
+      <div class="history-item" style="animation-delay:${delay}s" data-id="${s.id}">
+        <button class="hist-del" onclick="askDeleteSession(${s.id})" aria-label="Padam catatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg></button>
+        ${inner}
+        <div class="hist-del-confirm">
+          <span class="hist-del-q">Padam catatan ni?</span>
+          <div class="hist-del-row">
+            <button class="hist-del-no" onclick="cancelDeleteSession(${s.id})">Batal</button>
+            <button class="hist-del-yes" onclick="confirmDeleteSession(${s.id})">Padam</button>
+          </div>
+        </div>
       </div>`;
   }).join("");
+}
+
+function histCardEl(id) { return document.querySelector(`.history-item[data-id="${id}"]`); }
+function askDeleteSession(id) { const c = histCardEl(id); if (c) c.classList.add("confirming"); }
+function cancelDeleteSession(id) { const c = histCardEl(id); if (c) c.classList.remove("confirming"); }
+function confirmDeleteSession(id) {
+  const c = histCardEl(id);
+  const done = () => { sessions = sessions.filter(x => x.id !== id); saveSessions(); renderHistory(); };
+  if (c) { c.classList.remove("confirming"); c.classList.add("removing"); setTimeout(done, 360); }
+  else done();
 }
 
 // ── Utils ─────────────────────────────────────────────────
