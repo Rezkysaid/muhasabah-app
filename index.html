@@ -57,6 +57,15 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .logo-arabic{font-family:'Noto Naskh Arabic',Georgia,serif;font-weight:600;font-size:22px;color:var(--gold);line-height:1}
 .logo-latin{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-top:4px}
 .streak{display:flex;align-items:center;gap:6px;background:rgba(201,168,76,.1);border:1px solid var(--gold-dim);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--gold);animation:streakGlow 3s ease-in-out infinite}
+.streak-icon{width:14px;height:14px;display:inline-flex;transform-origin:50% 90%;animation:flameFlicker 1.25s ease-in-out infinite;will-change:transform,filter}
+.streak-icon svg{width:100%;height:100%;display:block;overflow:visible}
+@keyframes flameFlicker{
+  0%,100%{transform:scale(1) rotate(0deg) translateY(0);filter:drop-shadow(0 0 2px rgba(240,140,60,.55)) brightness(1)}
+  20%{transform:scale(1.06,1.13) rotate(-2.5deg) translateY(-.3px);filter:drop-shadow(0 0 5px rgba(245,165,80,.9)) brightness(1.12)}
+  40%{transform:scale(.95,1.04) rotate(1.8deg);filter:drop-shadow(0 0 2px rgba(240,140,60,.5)) brightness(.94)}
+  60%{transform:scale(1.04,1.1) rotate(-1.2deg) translateY(-.2px);filter:drop-shadow(0 0 6px rgba(255,185,95,1)) brightness(1.13)}
+  80%{transform:scale(.98,1.03) rotate(1deg);filter:drop-shadow(0 0 3px rgba(240,150,70,.6)) brightness(1.02)}
+}
 
 /* Greeting */
 .greeting{padding-bottom:18px}
@@ -471,7 +480,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
         <div class="logo-latin">Muhasabah AI</div>
       </div>
     </div>
-    <div class="streak"><span id="streak-count">0</span>hari</div>
+    <div class="streak"><span class="streak-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="flameGrad" x1="12" y1="3" x2="12" y2="21" gradientUnits="userSpaceOnUse"><stop stop-color="#ffe7a0"/><stop offset=".48" stop-color="#f0a868"/><stop offset="1" stop-color="#e0552a"/></linearGradient></defs><path fill="url(#flameGrad)" d="M12 21c4 0 6.5-2.7 6.5-6.2 0-2.4-1.1-4-2.3-5.4.2 1.4-.3 2.4-1 3-.3-2.7-1.7-5.1-4-6.6.5 2 .1 3.6-.8 4.8-.5.7-1.2 1.3-1.8 2-1.1 1.2-1.6 2.5-1.6 4 0 .8.2 1.5.5 2.1"/><path fill="#ffe08a" d="M12 21c-1.8 0-3-1.2-3-2.8 0-.9.4-1.6 1-2.2.2.6.6 1 1.1 1.2-.1-1.1.3-2 1.1-2.7.6 1 .8 2 .6 3.1.6-.3 1-.8 1.1-1.4.6.7.9 1.5.9 2.3 0 1.4-1.1 2.5-2.8 2.5z"/></svg></span><span id="streak-count">0</span> hari</div>
   </div>
   <div class="home-body">
   <div class="today-card">
