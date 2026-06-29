@@ -400,6 +400,18 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .doa-del-no{color:var(--muted)}
 .doa-del-no:active,.doa-del-yes:active{transform:scale(.94)}
 .doa-del-yes{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,transparent);background:color-mix(in srgb,var(--danger) 10%,transparent)}
+/* Gentle reminder — when a doa feels unanswered */
+.doa-reminder{margin-top:22px;padding:18px 18px 16px;border-radius:16px;background:radial-gradient(120% 80% at 88% -10%,rgba(227,184,94,.1),transparent 55%),linear-gradient(165deg,rgba(255,255,255,.022),rgba(255,255,255,.006));border:1px solid color-mix(in srgb,var(--gold) 16%,var(--border));animation:fadeUp .4s ease both}
+.doa-reminder-head{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.doa-reminder-ico{flex-shrink:0;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--gold) 12%,transparent);border:1px solid color-mix(in srgb,var(--gold) 22%,transparent);color:var(--gold)}
+.doa-reminder-ico svg{width:16px;height:16px;display:block}
+.doa-reminder-title{font-size:13.5px;font-weight:600;color:var(--text)}
+.doa-reminder-body{font-size:13px;color:var(--soft);line-height:1.65}
+.doa-reminder-list{list-style:none;margin:11px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.doa-reminder-list li{position:relative;padding-left:18px;font-size:12.5px;color:var(--soft);line-height:1.55}
+.doa-reminder-list li::before{content:'';position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.7}
+.doa-reminder-close{font-family:'Lora',Georgia,serif;font-style:italic;font-size:13px;color:var(--text);line-height:1.6;margin-top:14px}
+.doa-reminder-src{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-top:12px;opacity:.85}
 /* Reveal overlay after sending a doa */
 .doa-reveal{position:fixed;inset:0;z-index:300;background:radial-gradient(120% 80% at 50% 38%,#0a1016,#060910 70%);display:flex;align-items:center;justify-content:center;padding:40px;opacity:0;pointer-events:none;transition:opacity 1s ease}
 .doa-reveal.show{opacity:1}
@@ -581,6 +593,20 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   </div>
   <div class="section-label" style="margin-top:30px">Arkib bisikan</div>
   <div id="doa-archive"></div>
+  <div class="doa-reminder">
+    <div class="doa-reminder-head">
+      <span class="doa-reminder-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 20s-7-4.4-9.2-9C1.3 8 2.6 4.8 5.6 4.2 7.5 3.8 9.4 4.7 12 7.3c2.6-2.6 4.5-3.5 6.4-3.1 3 .6 4.3 3.8 2.8 6.8C19 15.6 12 20 12 20z"/></svg></span>
+      <span class="doa-reminder-title">Bila terasa doa belum dijawab</span>
+    </div>
+    <div class="doa-reminder-body">Lambat bukan bermakna ditolak. Setiap doa yang kau pohon, Allah dengar dan Dia simpan — tak pernah hilang. Dia jawab dengan salah satu daripada tiga:</div>
+    <ul class="doa-reminder-list">
+      <li>Diberi apa yang kau minta — pada waktu yang Dia tahu paling baik.</li>
+      <li>Diganti dengan sesuatu yang lebih baik untuk kau.</li>
+      <li>Disimpan sebagai pahala, atau dijauhkan satu keburukan yang setara.</li>
+    </ul>
+    <div class="doa-reminder-close">Tugas kau cuma minta. Yang lain, percaya pada Dia — Dia tak pernah lupa hamba-Nya.</div>
+    <div class="doa-reminder-src">— Maksud hadith, Riwayat Ahmad</div>
+  </div>
   <div style="height:24px"></div>
 </div>
 
