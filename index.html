@@ -361,15 +361,24 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .doa-send{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px;margin-top:14px;border:1px solid color-mix(in srgb,var(--gold) 42%,transparent);border-radius:16px;background:linear-gradient(135deg,rgba(138,106,46,.38),rgba(227,184,94,.16));color:#f3e6c8;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:.02em;box-shadow:0 10px 26px -14px rgba(227,184,94,.55);transition:transform .15s,box-shadow .2s,opacity .2s}
 .doa-send:active{transform:scale(.98)}
 .doa-send-ico{width:19px;height:19px;display:block;flex-shrink:0}
-.doa-voice-row{display:flex;align-items:stretch;gap:10px;margin-top:12px}
-.doa-mic{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px;border-radius:14px;border:1px solid color-mix(in srgb,var(--teal) 28%,var(--border));background:color-mix(in srgb,var(--teal) 7%,transparent);color:var(--teal);font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;transition:border-color .2s,background .2s,color .2s,transform .15s;-webkit-tap-highlight-color:transparent}
-.doa-mic:active{transform:scale(.98)}
-.doa-mic svg{width:18px;height:18px;flex-shrink:0;display:block}
-.doa-mic.listening{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);animation:micPulse 1.5s ease-in-out infinite}
-@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,.32)}50%{box-shadow:0 0 0 7px rgba(248,113,113,0)}}
-.doa-lang{flex-shrink:0;min-width:52px;padding:0 15px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--soft);font-size:12px;font-weight:700;letter-spacing:.05em;font-family:inherit;cursor:pointer;transition:border-color .2s,color .2s,transform .15s;-webkit-tap-highlight-color:transparent}
-.doa-lang:active{transform:scale(.95)}
-.doa-lang:hover{border-color:var(--teal-dim);color:var(--teal)}
+.doa-voice-row{display:flex;flex-direction:column;align-items:center;gap:13px;margin-top:16px}
+/* Mic — icon-only circular button with a living idle ripple */
+.doa-mic{position:relative;width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid color-mix(in srgb,var(--teal) 34%,var(--border));background:radial-gradient(circle at 50% 36%,color-mix(in srgb,var(--teal) 16%,transparent),transparent 70%),color-mix(in srgb,var(--teal) 5%,transparent);color:var(--teal);cursor:pointer;transition:transform .15s,border-color .25s,color .25s,background .25s;-webkit-tap-highlight-color:transparent}
+.doa-mic svg{width:25px;height:25px;display:block;position:relative;z-index:2}
+.doa-mic:active{transform:scale(.93)}
+.doa-mic::before,.doa-mic::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--teal) 38%,transparent);opacity:0;pointer-events:none;animation:micRipple 2.8s ease-out infinite}
+.doa-mic::after{animation-delay:1.4s}
+@keyframes micRipple{0%{transform:scale(.9);opacity:.55}80%{opacity:0}100%{transform:scale(1.45);opacity:0}}
+.doa-mic.listening{border-color:var(--danger);color:var(--danger);background:radial-gradient(circle at 50% 36%,color-mix(in srgb,var(--danger) 18%,transparent),transparent 70%),color-mix(in srgb,var(--danger) 7%,transparent)}
+.doa-mic.listening::before,.doa-mic.listening::after{border-color:color-mix(in srgb,var(--danger) 50%,transparent);animation-duration:1.5s}
+.doa-mic.listening::after{animation-delay:.75s}
+.doa-mic.listening svg{animation:micThrob 1.1s ease-in-out infinite}
+@keyframes micThrob{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+/* Language — segmented BM | EN control */
+.doa-lang-seg{display:inline-flex;padding:3px;border-radius:13px;background:rgba(255,255,255,.03);border:1px solid var(--border);gap:2px}
+.doa-lang-opt{padding:6px 17px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.05em;font-family:inherit;cursor:pointer;transition:color .22s,background .22s,box-shadow .22s;-webkit-tap-highlight-color:transparent}
+.doa-lang-opt.active{background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--teal) 30%,transparent)}
+.doa-mic-hint{font-size:11.5px;color:var(--muted);text-align:center;letter-spacing:.01em;min-height:14px;transition:color .2s}
 .doa-ghost{position:absolute;left:20px;right:20px;top:20px;font-family:'Lora',Georgia,serif;font-size:18px;line-height:1.75;color:var(--teal);pointer-events:none;white-space:pre-wrap;opacity:1;transform:translateY(0) scale(1);filter:blur(0);transition:transform 1.7s cubic-bezier(.33,0,.2,1),opacity 1.7s ease,filter 1.7s ease;z-index:3;text-shadow:0 0 18px rgba(45,212,191,.35)}
 .doa-ghost.rise{transform:translateY(-150px) scale(1.05);opacity:0;filter:blur(4px)}
 /* Rising particles when a doa is sent */
@@ -586,8 +595,12 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   <div class="doa-compose" id="doa-compose">
     <textarea class="doa-input" id="doa-input" placeholder="Ya Allah..." rows="6"></textarea>
     <div class="doa-voice-row" id="doa-voice-row">
-      <button class="doa-mic" id="doa-mic" onclick="toggleDoaVoice()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg><span id="doa-mic-label">Cakap doa kau</span></button>
-      <button class="doa-lang" id="doa-lang" onclick="toggleDoaLang()" aria-label="Tukar bahasa">BM</button>
+      <button class="doa-mic" id="doa-mic" onclick="toggleDoaVoice()" aria-label="Cakap doa kau"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></button>
+      <div class="doa-lang-seg" id="doa-lang-seg">
+        <button class="doa-lang-opt active" data-lang="ms-MY" onclick="setDoaLang('ms-MY')">BM</button>
+        <button class="doa-lang-opt" data-lang="en-US" onclick="setDoaLang('en-US')">EN</button>
+      </div>
+      <div class="doa-mic-hint" id="doa-mic-hint">Ketuk mic untuk cakap doa kau</div>
     </div>
     <button class="doa-send" id="doa-send" onclick="sendDoa()"><span>Hantar</span><svg class="doa-send-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M11.4 12V9.2a1.3 1.3 0 0 0-2.6 0v3.6L7.5 11.4c-.6-.7-1.6-.8-2.3-.3-.7.6-.8 1.6-.2 2.3l3.1 3.5c1 1.1 2.4 1.7 3.9 1.7"/><path d="M12.6 12V9.2a1.3 1.3 0 0 1 2.6 0v3.6l1.3-1.4c.6-.7 1.6-.8 2.3-.3.7.6.8 1.6.2 2.3l-3.1 3.5c-1 1.1-2.4 1.7-3.9 1.7"/><circle cx="12" cy="6" r="1" fill="currentColor" stroke="none"/></svg></button>
   </div>
@@ -1838,15 +1851,16 @@ function initDoaVoice() {
 
 function updateDoaMic() {
   const btn = document.getElementById("doa-mic");
-  const lbl = document.getElementById("doa-mic-label");
+  const hint = document.getElementById("doa-mic-hint");
   if (!btn) return;
   btn.classList.toggle("listening", doaListening);
-  if (lbl) lbl.textContent = doaListening ? "Mendengar… ketuk untuk henti" : "Cakap doa kau";
+  if (hint) hint.textContent = doaListening ? "Mendengar… ketuk untuk henti" : "Ketuk mic untuk cakap doa kau";
 }
 
-function toggleDoaLang() {
-  doaLang = doaLang === "ms-MY" ? "en-US" : "ms-MY";
-  document.getElementById("doa-lang").textContent = doaLang === "ms-MY" ? "BM" : "EN";
+function setDoaLang(lang) {
+  doaLang = lang;
+  document.querySelectorAll("#doa-lang-seg .doa-lang-opt").forEach(b =>
+    b.classList.toggle("active", b.dataset.lang === lang));
   if (doaListening) stopDoaVoice();
 }
 
@@ -1868,8 +1882,8 @@ function toggleDoaVoice() {
   doaRecog.onerror = (ev) => {
     doaListening = false; updateDoaMic();
     if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
-      const lbl = document.getElementById("doa-mic-label");
-      if (lbl) { lbl.textContent = "Mic tak diizinkan"; setTimeout(updateDoaMic, 2600); }
+      const hint = document.getElementById("doa-mic-hint");
+      if (hint) { hint.textContent = "Mic tak diizinkan dalam tetapan"; setTimeout(updateDoaMic, 2800); }
     }
   };
   try { doaRecog.start(); doaListening = true; updateDoaMic(); }
