@@ -437,6 +437,12 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 /* History */
 .history-item{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;animation:fadeUp .35s ease both;transition:opacity .35s ease,transform .35s ease}
 .history-item.removing{opacity:0;transform:translateX(-22px) scale(.96)}
+.history-item.has-chat{cursor:pointer}
+.history-item.has-chat:active{transform:scale(.985)}
+.history-item.has-chat:hover{border-color:var(--teal-dim)}
+.hist-open{display:flex;align-items:center;gap:7px;margin-top:11px;padding-top:11px;border-top:1px solid var(--border);font-size:12px;font-weight:600;color:var(--teal);letter-spacing:.01em}
+.hist-open svg{width:14px;height:14px;flex-shrink:0}
+.chatlog-foot{flex-shrink:0;text-align:center;font-size:11px;color:var(--muted);font-style:italic;padding:10px 0 calc(8px + env(safe-area-inset-bottom));letter-spacing:.01em}
 .hist-del{position:absolute;top:11px;right:11px;width:27px;height:27px;display:flex;align-items:center;justify-content:center;padding:0;background:transparent;border:none;color:var(--muted);opacity:.6;cursor:pointer;border-radius:8px;transition:color .2s,background .2s,opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent}
 .hist-del svg{width:15px;height:15px;display:block}
 .hist-del:active{transform:scale(.88)}
@@ -927,6 +933,19 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     <div style="font-size:20px;font-weight:300;color:var(--text)">Refleksi lepas</div>
   </div>
   <div id="history-list"></div>
+</div>
+
+<!-- CHAT LOG (read-only replay of a past conversation) -->
+<div class="screen" id="screen-chatlog">
+  <div class="chat-header">
+    <button class="back-btn" onclick="showScreen('history')">←</button>
+    <div style="flex:1">
+      <div class="chat-title" id="chatlog-title">Perbualan</div>
+      <div class="chat-sub" id="chatlog-sub"></div>
+    </div>
+  </div>
+  <div class="messages" id="chatlog-messages"></div>
+  <div class="chatlog-foot">Perbualan lepas · cuma untuk dibaca semula</div>
 </div>
 
 <!-- DOA REVEAL OVERLAY -->
@@ -1495,7 +1514,8 @@ function saveNiat() {
     date: new Date().toISOString(),
     mood: selectedMood,
     niat,
-    niatStatus: "pending"
+    niatStatus: "pending",
+    chat: chatHistory.map(m => ({ role: m.role, content: m.content }))
   };
   sessions.push(session);
   saveSessions();
@@ -1518,7 +1538,7 @@ function saveNiat() {
 function saveReflection() {
   const note = document.getElementById("reflect-input").value.trim();
   if (!note) return;
-  sessions.push({ id: Date.now(), date: new Date().toISOString(), type: "social", situation: socialSituation, reflection: note });
+  sessions.push({ id: Date.now(), date: new Date().toISOString(), type: "social", situation: socialSituation, reflection: note, chat: chatHistory.map(m => ({ role: m.role, content: m.content })) });
   saveSessions();
   const btn = document.getElementById("reflect-save-btn");
   btn.textContent = "✓ Refleksi disimpan";
@@ -1946,19 +1966,53 @@ function renderHistory() {
             ? `<div class="history-niat">${s.niat}</div><div class="history-status ${st.cls}">${st.lbl}</div>`
             : `<div style="font-size:12px;color:var(--muted);margin-top:4px">Tiada niat ditetapkan</div>`}`;
     }
+    const hasChat = s.chat && s.chat.length;
     return `
-      <div class="history-item" style="animation-delay:${delay}s" data-id="${s.id}">
-        <button class="hist-del" onclick="askDeleteSession(${s.id})" aria-label="Padam catatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg></button>
+      <div class="history-item${hasChat ? " has-chat" : ""}" style="animation-delay:${delay}s" data-id="${s.id}"${hasChat ? ` onclick="openChatLog(${s.id})"` : ""}>
+        <button class="hist-del" onclick="event.stopPropagation();askDeleteSession(${s.id})" aria-label="Padam catatan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg></button>
         ${inner}
-        <div class="hist-del-confirm">
+        ${hasChat ? `<div class="hist-open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 19l1.2-3.6A8 8 0 1112 20a8.4 8.4 0 01-4-1L4 19z"/></svg>Baca semula perbualan</div>` : ""}
+        <div class="hist-del-confirm" onclick="event.stopPropagation()">
           <span class="hist-del-q">Padam catatan ni?</span>
           <div class="hist-del-row">
-            <button class="hist-del-no" onclick="cancelDeleteSession(${s.id})">Batal</button>
-            <button class="hist-del-yes" onclick="confirmDeleteSession(${s.id})">Padam</button>
+            <button class="hist-del-no" onclick="event.stopPropagation();cancelDeleteSession(${s.id})">Batal</button>
+            <button class="hist-del-yes" onclick="event.stopPropagation();confirmDeleteSession(${s.id})">Padam</button>
           </div>
         </div>
       </div>`;
   }).join("");
+}
+
+function openChatLog(id) {
+  const s = sessions.find(x => x.id === id);
+  if (!s || !s.chat || !s.chat.length) return;
+  const d = new Date(s.date).toLocaleDateString("ms-MY", { weekday:"long", day:"numeric", month:"long" });
+  document.getElementById("chatlog-title").textContent = s.type === "social" ? "Cabaran Sosial" : "Muhasabah" + (s.mood ? " · " + s.mood : "");
+  document.getElementById("chatlog-sub").textContent = d;
+  const c = document.getElementById("chatlog-messages");
+  c.innerHTML = "";
+  s.chat.forEach(m => {
+    if (m.role === "user") {
+      const div = document.createElement("div");
+      div.className = "msg user";
+      div.innerHTML = `<div class="bubble">${escHtml(m.content)}</div>`;
+      c.appendChild(div);
+    } else {
+      const { text, ayah } = parseResponse(m.content);
+      const div = document.createElement("div");
+      div.className = "msg ai";
+      div.innerHTML = `<div class="ai-avatar">${BRAND_ICON}</div><div class="msg-body"><div class="bubble">${escHtml(text)}</div></div>`;
+      c.appendChild(div);
+      if (ayah && (ayah.arabic || ayah.translation)) {
+        const ac = document.createElement("div");
+        ac.className = "ayah-card";
+        ac.innerHTML = `<div class="ayah-label">${AYAH_ICON}Renungan</div>${ayah.arabic ? `<div class="ayah-arabic">${ayah.arabic}</div>` : ""}${ayah.translation ? `<div class="ayah-translation">"${escHtml(ayah.translation)}"</div>` : ""}${ayah.source ? `<div class="ayah-source">— ${escHtml(ayah.source)}</div>` : ""}`;
+        c.appendChild(ac);
+      }
+    }
+  });
+  c.scrollTop = 0;
+  showScreen("chatlog");
 }
 
 function histCardEl(id) { return document.querySelector(`.history-item[data-id="${id}"]`); }
