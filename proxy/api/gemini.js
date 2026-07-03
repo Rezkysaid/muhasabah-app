@@ -29,20 +29,30 @@ export default async function handler(req, res) {
   const { prompt } = req.body || {};
   if (!prompt) { res.status(400).json({ error: "Missing prompt" }); return; }
 
+  // Try flash first; if its free-tier quota is exhausted, fall back to
+  // flash-lite, which has higher free rate limits.
+  const MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
+
   try {
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 2048, temperature: 0.8, thinkingConfig: { thinkingBudget: 0 } },
-        }),
-      }
-    );
-    const data = await r.json();
-    res.status(200).json(data);
+    let lastData = null;
+    for (const model of MODELS) {
+      const r = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 2048, temperature: 0.8, thinkingConfig: { thinkingBudget: 0 } },
+          }),
+        }
+      );
+      const data = await r.json();
+      const exhausted = r.status === 429 || data?.error?.status === "RESOURCE_EXHAUSTED";
+      if (!exhausted) { res.status(200).json(data); return; }
+      lastData = data;
+    }
+    res.status(429).json(lastData);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
