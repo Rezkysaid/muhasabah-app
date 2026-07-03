@@ -1447,7 +1447,7 @@ async function sendMessage() {
   try {
     let raw = "";
     if (chatMode === "social") {
-      if (exchCount >= 3) {
+      if (exchCount === 3) {
         const p = `Kau teman (companion) dalam app Muraqabah AI — bukan therapist. Sesi fasa akhir untuk cabaran sosial.
 Situasi asal: ${socialSituation}
 Conversation:
@@ -1462,7 +1462,9 @@ Sekarang:
 PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks utama — boleh sebabkan respons terhenti separuh jalan. Kalau nak rujuk ayat, letak dalam format <ayah>arabic: ...\ntranslation: ...\nsource: ...</ayah> di hujung sahaja. Balas warm, ringkas, jangan ceramah panjang.`;
         raw = await askGemini(p);
         setTimeout(() => {
+          if (document.getElementById("reflect-cta")) return;
           const btn = document.createElement("button");
+          btn.id = "reflect-cta";
           btn.className = "btn-primary active";
           btn.style.cssText = "margin-top:8px;max-width:100%";
           btn.textContent = "Catat Refleksi →";
@@ -1470,6 +1472,15 @@ PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks utam
           document.getElementById("messages").appendChild(btn);
           scrollMessages();
         }, 400);
+      } else if (exchCount > 3) {
+        const p = `Kau teman (companion) dalam app Muraqabah AI — bukan therapist. Fasa selepas closing — kau DAH pun bagi refleksi penuh dan tawaran catat refleksi sebelum ni.
+Situasi asal: ${socialSituation}
+Conversation:
+${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
+
+PALING PENTING: Jangan ulang cadangan atau suruhan (catat refleksi, teknik, dll) yang user dah tolak atau tak sambut. Menolak pun jawapan yang sah — terima dan move on. Hanya sentuh balik kalau user sendiri yang bawa.
+Respond pada apa yang dia cakap, acknowledge, teman dia. 2-4 ayat, warm, jangan ceramah.`;
+        raw = await askGemini(p);
       } else {
         const p = `Kau teman (companion) dalam app Muraqabah AI — bukan therapist. Tone warm, tak menghakimi. Guna bahasa yang user guna.
 Situasi asal: ${socialSituation}
@@ -1479,17 +1490,19 @@ ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 Cara respond: Acknowledge apa yang dia cakap (1-2 ayat), explore lagi dengan SATU soalan follow-up untuk faham pattern dia. Jangan label/diagnose, jangan bagi solution lagi. 2-4 ayat sahaja.`;
         raw = await askGemini(p);
       }
-    } else if (exchCount >= 3) {
+    } else if (exchCount === 3) {
       const p = `Kau teman muhasabah. Sesi fasa akhir.
 Mood: ${selectedMood}
 Conversation:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
-Bagi closing warm dan cadangkan satu niat kecil spesifik berdasarkan apa yang dia share. Tanya kalau dia ready. Pendek, warm, jangan ceramah.
+Bagi closing warm. Kalau sesuai, cadangkan SATU niat kecil spesifik berdasarkan apa yang dia share — SEKALI sahaja, sebagai tawaran ringan, bukan paksaan. Kalau dia nampak tak berminat atau dah tolak, jangan cadangkan langsung; cukup tutup dengan lembut. Pendek, warm, jangan ceramah.
 PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks — boleh sebabkan respons terhenti separuh jalan. Cukup sebut nama surah/konsep tanpa quote penuh.`;
       raw = await askGemini(p);
       setTimeout(() => {
+        if (document.getElementById("niat-cta")) return;
         const btn = document.createElement("button");
+        btn.id = "niat-cta";
         btn.className = "btn-primary active";
         btn.style.cssText = "margin-top:8px;max-width:100%";
         btn.textContent = "Tetapkan Niat Kecil →";
@@ -1497,6 +1510,16 @@ PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks — 
         document.getElementById("messages").appendChild(btn);
         scrollMessages();
       }, 400);
+    } else if (exchCount > 3) {
+      const p = `Kau teman muhasabah. Fasa selepas closing — kau DAH pun cadangkan niat kecil sebelum ni dalam conversation.
+Mood: ${selectedMood}
+Conversation:
+${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
+
+PALING PENTING: Kalau user dah tolak, tak nak, atau belum bersedia untuk niat tu — TERIMA jawapan dia sepenuhnya dan JANGAN sebut atau ulang pasal niat lagi langsung. Menolak pun satu jawapan yang sah. Jangan pujuk, jangan desak, jangan "mungkin awak boleh fikirkan...". Hanya sentuh pasal niat kalau user SENDIRI yang bawa balik topik tu.
+Selain tu: respond pada apa yang dia cakap, acknowledge perasaan dia, teman dia. Boleh tanya satu soalan lembut kalau sesuai, atau cukup validate sahaja. 2-4 ayat, warm, jangan ceramah.
+PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks — cukup sebut nama surah/konsep tanpa quote penuh.`;
+      raw = await askGemini(p);
     } else {
       const fullPrompt = `Kau teman muhasabah. Lembut, tenang, manusiawi. Bahasa Melayu natural.
 Mood asal: ${selectedMood}. Context: ${MOOD_CONTEXT[selectedMood]}
