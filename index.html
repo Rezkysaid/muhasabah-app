@@ -1453,6 +1453,7 @@ Situasi asal: ${socialSituation}
 Conversation:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
+JANGAN mula respons dengan salam/greeting — perbualan dah berjalan.
 Sekarang:
 1. Secara dalaman, kenalpasti pattern psikologi yang relevan (cth: fear of negative evaluation, people pleasing, conflict avoidance, low assertiveness, imposter syndrome, overthinking post-interaction, social comparison, rejection sensitivity) — TAPI JANGAN sebut nama klinikal/label tu terus kat user, cukup describe dengan bahasa biasa dan mesra.
 2. Cadangkan SATU teknik psikologi ringkas dan praktikal yang sesuai (reframing, grounding 5-4-3-2-1, box breathing, langkah kecil exposure, dll).
@@ -1478,6 +1479,7 @@ Situasi asal: ${socialSituation}
 Conversation:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
+JANGAN mula respons dengan salam/greeting — perbualan dah berjalan.
 PALING PENTING: Jangan ulang cadangan atau suruhan (catat refleksi, teknik, dll) yang user dah tolak atau tak sambut. Menolak pun jawapan yang sah — terima dan move on. Hanya sentuh balik kalau user sendiri yang bawa.
 Respond pada apa yang dia cakap, acknowledge, teman dia. 2-4 ayat, warm, jangan ceramah.`;
         raw = await askGemini(p);
@@ -1487,6 +1489,7 @@ Situasi asal: ${socialSituation}
 Conversation setakat ni:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
+JANGAN mula respons dengan salam/greeting — perbualan dah berjalan.
 Cara respond: Acknowledge apa yang dia cakap (1-2 ayat), explore lagi dengan SATU soalan follow-up untuk faham pattern dia. Jangan label/diagnose, jangan bagi solution lagi. 2-4 ayat sahaja.`;
         raw = await askGemini(p);
       }
@@ -1496,6 +1499,7 @@ Mood: ${selectedMood}
 Conversation:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
+JANGAN mula respons dengan salam/greeting — perbualan dah berjalan.
 Bagi closing warm. Kalau sesuai, cadangkan SATU niat kecil spesifik berdasarkan apa yang dia share — SEKALI sahaja, sebagai tawaran ringan, bukan paksaan. Kalau dia nampak tak berminat atau dah tolak, jangan cadangkan langsung; cukup tutup dengan lembut. Pendek, warm, jangan ceramah.
 PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks — boleh sebabkan respons terhenti separuh jalan. Cukup sebut nama surah/konsep tanpa quote penuh.`;
       raw = await askGemini(p);
@@ -1516,6 +1520,7 @@ Mood: ${selectedMood}
 Conversation:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
+JANGAN mula respons dengan salam/greeting — perbualan dah berjalan.
 PALING PENTING: Kalau user dah tolak, tak nak, atau belum bersedia untuk niat tu — TERIMA jawapan dia sepenuhnya dan JANGAN sebut atau ulang pasal niat lagi langsung. Menolak pun satu jawapan yang sah. Jangan pujuk, jangan desak, jangan "mungkin awak boleh fikirkan...". Hanya sentuh pasal niat kalau user SENDIRI yang bawa balik topik tu.
 Selain tu: respond pada apa yang dia cakap, acknowledge perasaan dia, teman dia. Boleh tanya satu soalan lembut kalau sesuai, atau cukup validate sahaja. 2-4 ayat, warm, jangan ceramah.
 PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks — cukup sebut nama surah/konsep tanpa quote penuh.`;
@@ -1527,10 +1532,12 @@ Mood asal: ${selectedMood}. Context: ${MOOD_CONTEXT[selectedMood]}
 Conversation setakat ni:
 ${chatHistory.map(m=>`${m.role}: ${m.content}`).join("\n")}
 
+PENTING: Perbualan DAH bermula dan salam dah diberi awal-awal tadi. JANGAN mula respons dengan "Assalamualaikum", "salam", "hai" atau apa-apa greeting lagi — terus sambung respond macam perbualan yang sedang berjalan.
 Cara respond: Acknowledge apa yang dia cakap (1-2 ayat), tanya satu soalan follow-up lebih dalam. Boleh connect dengan konsep Islam tapi jangan forced. JANGAN ceramah. 3-5 ayat sahaja.
 PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks utama — ini boleh sebabkan respons kau terhenti separuh jalan. Kalau nak rujuk ayat, letak dalam format <ayah>arabic: ...\ntranslation: ...\nsource: ...</ayah> di hujung sahaja, dan dalam teks utama cukup sebut nama surah tanpa quote penuh.`;
       raw = await askGemini(fullPrompt);
     }
+    raw = stripLeadingSalam(raw);
     chatHistory.push({ role:"assistant", content: raw });
     removeTyping();
     const { text: t, ayah } = parseResponse(raw);
@@ -1542,6 +1549,14 @@ PENTING: Jangan quote ayat Al-Quran (Arab atau terjemahan) terus dalam teks utam
 
   isLoading = false;
   document.getElementById("send-btn").disabled = false;
+}
+
+// Buang salam berulang di awal respons sambungan — salam hanya sesuai
+// pada mesej pembukaan sesi, bukan setiap giliran.
+function stripLeadingSalam(t) {
+  const stripped = t.replace(/^\s*(assalamualaikum(\s+w\.?b\.?t\.?|\s+warahmatullahi?\s*wabarakatuh)?|waalaikumussalam|salam\s+sejahtera|salam)\b[\s.,!]*/i, "").trim();
+  if (!stripped) return t;
+  return stripped.charAt(0).toUpperCase() + stripped.slice(1);
 }
 
 // ── Message rendering ─────────────────────────────────────
