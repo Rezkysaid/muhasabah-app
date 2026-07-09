@@ -1,5 +1,5 @@
 {
   "functions": {
-    "api/gemini.js": { "maxDuration": 15 }
+    "api/gemini.js": { "maxDuration": 60 }
   }
 }

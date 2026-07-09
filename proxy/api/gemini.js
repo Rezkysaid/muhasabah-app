@@ -43,18 +43,35 @@ export default async function handler(req, res) {
       const thinkingConfig = model.startsWith("gemini-3")
         ? { thinkingLevel: "low" }
         : { thinkingBudget: 0 };
-      const r = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { maxOutputTokens: 4096, temperature: 0.8, thinkingConfig },
-          }),
-        }
-      );
-      const data = await r.json();
+
+      // Guard each attempt with our own timeout so a slow model returns a
+      // clean JSON error (with CORS headers) instead of letting the platform
+      // kill the function, which reaches the browser as an opaque "Load failed".
+      const ac = new AbortController();
+      const timer = setTimeout(() => ac.abort(), 25000);
+      let r, data;
+      try {
+        r = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { maxOutputTokens: 4096, temperature: 0.8, thinkingConfig },
+            }),
+            signal: ac.signal,
+          }
+        );
+        data = await r.json();
+      } catch (err) {
+        // Timed out or network blip talking to Google — try the next model.
+        clearTimeout(timer);
+        lastData = { error: { message: "AI lambat sangat sekejap ni, cuba lagi ya." } };
+        lastStatus = 503;
+        continue;
+      }
+      clearTimeout(timer);
       // Fall through to the next model not only when the free quota is
       // exhausted, but also when a model is retired/unavailable (e.g. a
       // future Gemini deprecation) so one dead model can't hard-fail the app.
