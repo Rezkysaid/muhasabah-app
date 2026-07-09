@@ -31,10 +31,11 @@ export default async function handler(req, res) {
 
   // Try flash first; if its free-tier quota is exhausted, fall back to
   // flash-lite, which has higher free rate limits.
-  const MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
+  const MODELS = ["gemini-3.5-flash", "gemini-3.1-flash-lite"];
 
   try {
     let lastData = null;
+    let lastStatus = 429;
     for (const model of MODELS) {
       const r = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -48,11 +49,20 @@ export default async function handler(req, res) {
         }
       );
       const data = await r.json();
-      const exhausted = r.status === 429 || data?.error?.status === "RESOURCE_EXHAUSTED";
-      if (!exhausted) { res.status(200).json(data); return; }
+      // Fall through to the next model not only when the free quota is
+      // exhausted, but also when a model is retired/unavailable (e.g. a
+      // future Gemini deprecation) so one dead model can't hard-fail the app.
+      const status = data?.error?.status;
+      const exhausted = r.status === 429 || status === "RESOURCE_EXHAUSTED";
+      const unavailable =
+        r.status === 404 ||
+        status === "NOT_FOUND" ||
+        /no longer available|not found|is not supported|deprecated/i.test(data?.error?.message || "");
+      if (!exhausted && !unavailable) { res.status(200).json(data); return; }
       lastData = data;
+      lastStatus = exhausted ? 429 : 502;
     }
-    res.status(429).json(lastData);
+    res.status(lastStatus).json(lastData);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
