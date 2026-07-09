@@ -37,6 +37,12 @@ export default async function handler(req, res) {
     let lastData = null;
     let lastStatus = 429;
     for (const model of MODELS) {
+      // Gemini 3.x uses thinkingLevel ("low" = minimal); Gemini 2.5 uses
+      // thinkingBudget (0 = off). Sending the wrong one is a 400, so pick
+      // per model. Keep thinking minimal for a snappy, Google-Translate feel.
+      const thinkingConfig = model.startsWith("gemini-3")
+        ? { thinkingLevel: "low" }
+        : { thinkingBudget: 0 };
       const r = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
         {
@@ -44,7 +50,7 @@ export default async function handler(req, res) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { maxOutputTokens: 2048, temperature: 0.8, thinkingConfig: { thinkingBudget: 0 } },
+            generationConfig: { maxOutputTokens: 4096, temperature: 0.8, thinkingConfig },
           }),
         }
       );
