@@ -13,6 +13,11 @@ function isAllowedOrigin(origin) {
   }
 }
 
+// NOTE: the route is still /api/gemini for backward compatibility — three
+// frontends (Muraqabah, Translations, PromptCraft) hardcode this URL. The
+// engine underneath is now DeepSeek V4 (paid) instead of Gemini free, to dodge
+// the constant free-tier "high demand" rate limiting. We keep the response in
+// the Gemini shape so none of the callers need to change.
 export default async function handler(req, res) {
   const origin = req.headers.origin || "";
   if (isAllowedOrigin(origin)) {
@@ -26,79 +31,55 @@ export default async function handler(req, res) {
 
   if (!isAllowedOrigin(origin)) { res.status(403).json({ error: "Forbidden origin" }); return; }
 
-  const { prompt, image } = req.body || {};
+  const { prompt } = req.body || {};
   if (!prompt) { res.status(400).json({ error: "Missing prompt" }); return; }
 
-  // Optional reference image (base64), so the caller can attach a picture and
-  // let the model see it instead of guessing. Backward-compatible: text-only
-  // callers just omit it.
-  const parts = [{ text: prompt }];
-  if (image && image.data && image.mimeType) {
-    if (image.data.length > 7_000_000) {
-      res.status(413).json({ error: { message: "Gambar terlalu besar — cuba yang lebih kecil." } });
-      return;
-    }
-    parts.push({ inlineData: { mimeType: image.mimeType, data: image.data } });
-  }
-
-  // Try flash first; if its free-tier quota is exhausted, fall back to
-  // flash-lite, which has higher free rate limits.
-  const MODELS = ["gemini-3.5-flash", "gemini-3.1-flash-lite"];
+  // Guard the upstream call with our own timeout so a slow response returns a
+  // clean JSON error (with CORS headers) instead of letting the platform kill
+  // the function, which reaches the browser as an opaque "Load failed".
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), 25000);
 
   try {
-    let lastData = null;
-    let lastStatus = 429;
-    for (const model of MODELS) {
-      // Gemini 3.x uses thinkingLevel ("low" = minimal); Gemini 2.5 uses
-      // thinkingBudget (0 = off). Sending the wrong one is a 400, so pick
-      // per model. Keep thinking minimal for a snappy, Google-Translate feel.
-      const thinkingConfig = model.startsWith("gemini-3")
-        ? { thinkingLevel: "low" }
-        : { thinkingBudget: 0 };
-
-      // Guard each attempt with our own timeout so a slow model returns a
-      // clean JSON error (with CORS headers) instead of letting the platform
-      // kill the function, which reaches the browser as an opaque "Load failed".
-      const ac = new AbortController();
-      const timer = setTimeout(() => ac.abort(), 25000);
-      let r, data;
-      try {
-        r = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts }],
-              generationConfig: { maxOutputTokens: 4096, temperature: 0.8, thinkingConfig },
-            }),
-            signal: ac.signal,
-          }
-        );
-        data = await r.json();
-      } catch (err) {
-        // Timed out or network blip talking to Google — try the next model.
-        clearTimeout(timer);
-        lastData = { error: { message: "AI lambat sangat sekejap ni, cuba lagi ya." } };
-        lastStatus = 503;
-        continue;
-      }
+    let r, data;
+    try {
+      r = await fetch("https://api.deepseek.com/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "deepseek-v4-flash",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.8,
+          max_tokens: 4096,
+          // Non-thinking mode: snappy, Google-Translate feel — we don't need a
+          // visible reasoning pass for rewriting/summarising prompts.
+          thinking: { type: "disabled" },
+          stream: false,
+        }),
+        signal: ac.signal,
+      });
+      data = await r.json();
+    } catch (err) {
       clearTimeout(timer);
-      // Fall through to the next model not only when the free quota is
-      // exhausted, but also when a model is retired/unavailable (e.g. a
-      // future Gemini deprecation) so one dead model can't hard-fail the app.
-      const status = data?.error?.status;
-      const exhausted = r.status === 429 || status === "RESOURCE_EXHAUSTED";
-      const unavailable =
-        r.status === 404 ||
-        status === "NOT_FOUND" ||
-        /no longer available|not found|is not supported|deprecated/i.test(data?.error?.message || "");
-      if (!exhausted && !unavailable) { res.status(200).json(data); return; }
-      lastData = data;
-      lastStatus = exhausted ? 429 : 502;
+      res.status(503).json({ error: { message: "AI lambat sangat sekejap ni, cuba lagi ya." } });
+      return;
     }
-    res.status(lastStatus).json(lastData);
+    clearTimeout(timer);
+
+    if (!r.ok || data?.error) {
+      const msg = data?.error?.message || "AI tak dapat jawab sekejap ni, cuba lagi.";
+      res.status(r.status && r.status >= 400 ? r.status : 502).json({ error: { message: msg } });
+      return;
+    }
+
+    // Adapt DeepSeek's OpenAI-shaped reply to the Gemini shape the callers
+    // already parse (`candidates[0].content.parts[0].text`).
+    const text = data?.choices?.[0]?.message?.content || "";
+    res.status(200).json({ candidates: [{ content: { parts: [{ text }] } }] });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: { message: e.message } });
   }
 }
