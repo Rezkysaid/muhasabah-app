@@ -26,8 +26,20 @@ export default async function handler(req, res) {
 
   if (!isAllowedOrigin(origin)) { res.status(403).json({ error: "Forbidden origin" }); return; }
 
-  const { prompt } = req.body || {};
+  const { prompt, image } = req.body || {};
   if (!prompt) { res.status(400).json({ error: "Missing prompt" }); return; }
+
+  // Optional reference image (base64), so the caller can attach a picture and
+  // let the model see it instead of guessing. Backward-compatible: text-only
+  // callers just omit it.
+  const parts = [{ text: prompt }];
+  if (image && image.data && image.mimeType) {
+    if (image.data.length > 7_000_000) {
+      res.status(413).json({ error: { message: "Gambar terlalu besar — cuba yang lebih kecil." } });
+      return;
+    }
+    parts.push({ inlineData: { mimeType: image.mimeType, data: image.data } });
+  }
 
   // Try flash first; if its free-tier quota is exhausted, fall back to
   // flash-lite, which has higher free rate limits.
@@ -57,7 +69,7 @@ export default async function handler(req, res) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
+              contents: [{ parts }],
               generationConfig: { maxOutputTokens: 4096, temperature: 0.8, thinkingConfig },
             }),
             signal: ac.signal,
