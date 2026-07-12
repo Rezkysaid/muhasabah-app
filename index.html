@@ -224,6 +224,27 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .chat-sub{font-size:12px;color:var(--muted);margin-top:1px}
 .mood-chip{display:flex;align-items:center;background:rgba(45,212,191,.1);border:1px solid var(--teal-dim);color:var(--teal);font-size:11px;padding:4px 10px;border-radius:20px;white-space:nowrap}
 
+/* Therapy scene — cozy illustrated room above the chat */
+.therapy-scene{position:relative;flex-shrink:0;max-height:150px;margin:2px -6px 10px;border-radius:16px;overflow:hidden;border:1px solid var(--border);transition:max-height .4s ease,opacity .3s ease,margin .4s ease;animation:fadeUp .4s ease both}
+.therapy-scene.collapsed{max-height:0;opacity:0;margin:0 -6px;border-width:0}
+.therapy-scene svg{width:100%;height:auto;display:block}
+.scene-steam{animation:steamRise 2.6s ease-out infinite}
+.scene-steam.s2{animation-delay:1.3s}
+.scene-char{animation:charBob 4.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+.scene-eyes{animation:charBlink 5.2s infinite;transform-box:fill-box;transform-origin:50% 50%}
+.scene-glow{animation:lampGlow 6s ease-in-out infinite}
+.scene-rain line{stroke-dasharray:5 9;animation:rainFall 1.4s linear infinite}
+.scene-moonh{animation:lampGlow 8s ease-in-out infinite}
+@keyframes steamRise{0%{transform:translateY(0);opacity:0}25%{opacity:.55}100%{transform:translateY(-11px);opacity:0}}
+@keyframes charBob{0%,100%{transform:translateY(0)}50%{transform:translateY(1.6px)}}
+@keyframes charBlink{0%,93.5%,100%{transform:scaleY(1)}95.5%,97.5%{transform:scaleY(.1)}}
+@keyframes lampGlow{0%,100%{opacity:.5}50%{opacity:.85}}
+@keyframes rainFall{to{stroke-dashoffset:-14}}
+.ambient-btn{position:absolute;top:9px;right:9px;width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(14,11,22,.55);border:1px solid rgba(255,255,255,.12);color:#b9ae94;cursor:pointer;padding:0;backdrop-filter:blur(4px);transition:color .2s,border-color .2s,transform .15s;-webkit-tap-highlight-color:transparent;z-index:3}
+.ambient-btn:active{transform:scale(.88)}
+.ambient-btn.on{color:#2dd4bf;border-color:rgba(45,212,191,.45)}
+.ambient-btn svg{width:15px;height:15px;display:block}
+
 /* Messages */
 .messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding-bottom:12px;min-height:0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .messages::-webkit-scrollbar{display:none}
@@ -626,6 +647,75 @@ html.light .doa-ayat-ar{text-shadow:0 0 20px rgba(156,115,29,.22)}
       <div class="chat-sub" id="chat-sub">Refleksi hari ini</div>
     </div>
     <div class="mood-chip" id="active-chip"></div>
+  </div>
+  <div class="therapy-scene" id="therapy-scene">
+    <svg viewBox="0 0 390 148" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="390" height="148" fill="#2a2018"/>
+      <rect y="122" width="390" height="26" fill="#241a13"/>
+      <!-- frame -->
+      <rect x="26" y="16" width="42" height="34" rx="5" fill="#3a2c20"/>
+      <circle cx="47" cy="33" r="9" fill="#8a6647"/>
+      <!-- lamp -->
+      <ellipse class="scene-glow" cx="97" cy="74" rx="46" ry="32" fill="#c98f4f" opacity=".12"/>
+      <path d="M79 36h36l8 30H71z" fill="#c99a66"/>
+      <rect x="95.5" y="66" width="3.5" height="52" fill="#4a3626"/>
+      <ellipse cx="97" cy="120" rx="15" ry="4.5" fill="#4a3626"/>
+      <!-- window -->
+      <rect x="266" y="12" width="98" height="82" rx="7" fill="#3b2d20"/>
+      <rect x="273" y="19" width="40" height="32" fill="#1c2634"/>
+      <rect x="317" y="19" width="40" height="32" fill="#1c2634"/>
+      <rect x="273" y="55" width="40" height="32" fill="#1c2634"/>
+      <rect x="317" y="55" width="40" height="32" fill="#1c2634"/>
+      <circle class="scene-moonh" cx="337" cy="35" r="16" fill="#ddd8c8" opacity=".14"/>
+      <circle cx="337" cy="35" r="10" fill="#ddd8c8"/>
+      <g class="scene-rain" stroke="#6f87a8" stroke-width="1.2" opacity=".55">
+        <line x1="280" y1="21" x2="280" y2="49"/><line x1="292" y1="21" x2="292" y2="49"/><line x1="304" y1="21" x2="304" y2="49"/>
+        <line x1="322" y1="21" x2="322" y2="49"/><line x1="350" y1="21" x2="350" y2="49"/>
+        <line x1="280" y1="57" x2="280" y2="85"/><line x1="298" y1="57" x2="298" y2="85"/>
+        <line x1="326" y1="57" x2="326" y2="85"/><line x1="340" y1="57" x2="340" y2="85"/><line x1="352" y1="57" x2="352" y2="85"/>
+      </g>
+      <!-- character -->
+      <g class="scene-char">
+        <g id="char-male">
+          <path d="M160 112c0-22 16-32 35-32s35 10 35 32z" fill="#5b4536"/>
+          <circle cx="171" cy="66" r="4.5" fill="#eec9a0"/><circle cx="219" cy="66" r="4.5" fill="#eec9a0"/>
+          <circle cx="195" cy="64" r="24" fill="#f0cfa4"/>
+          <path d="M171 62c0-15 11-25 24-25s24 10 24 25c-7-7-41-7-48 0z" fill="#3b322a"/>
+          <g fill="rgba(255,255,255,.05)" stroke="#2b241e" stroke-width="2.4">
+            <circle cx="185" cy="67" r="8"/><circle cx="205" cy="67" r="8"/>
+          </g>
+          <line x1="193" y1="67" x2="197" y2="67" stroke="#2b241e" stroke-width="2.4"/>
+          <g class="scene-eyes" fill="#2b241e"><circle cx="185" cy="67" r="2"/><circle cx="205" cy="67" r="2"/></g>
+          <path d="M189 79q6 4.5 12 0" fill="none" stroke="#a06b4a" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <g id="char-female" style="display:none">
+          <path d="M160 112c0-22 16-32 35-32s35 10 35 32z" fill="#4e6a63"/>
+          <path d="M168 60q0 38 27 50 27-12 27-50z" fill="#7fb0a6"/>
+          <circle cx="195" cy="62" r="27" fill="#7fb0a6"/>
+          <circle cx="195" cy="66" r="17.5" fill="#f0cfa4"/>
+          <g class="scene-eyes" fill="#2b241e"><circle cx="188" cy="64" r="2"/><circle cx="202" cy="64" r="2"/></g>
+          <circle cx="182" cy="71" r="2.8" fill="#d98f6e" opacity=".3"/><circle cx="208" cy="71" r="2.8" fill="#d98f6e" opacity=".3"/>
+          <path d="M189 75q6 4.5 12 0" fill="none" stroke="#a06b4a" stroke-width="2" stroke-linecap="round"/>
+        </g>
+      </g>
+      <!-- desk -->
+      <rect x="94" y="103" width="202" height="13" rx="6" fill="#5a4330"/>
+      <path d="M103 116h184l-6 32H109z" fill="#46332a"/>
+      <!-- mug + steam (left) -->
+      <rect x="126" y="90" width="17" height="14" rx="3.5" fill="#7ea89b"/>
+      <path d="M143 93a4.5 4.5 0 0 1 0 8" fill="none" stroke="#7ea89b" stroke-width="2.4"/>
+      <path class="scene-steam" d="M132 86q-3-4.5 0-9" fill="none" stroke="#cfc8b8" stroke-width="1.6" stroke-linecap="round"/>
+      <path class="scene-steam s2" d="M138 86q3-4.5 0-9" fill="none" stroke="#cfc8b8" stroke-width="1.6" stroke-linecap="round"/>
+      <!-- plant + mug (right) -->
+      <g fill="#5c7d52">
+        <path d="M247 92c-1-13 -8-19-14-22 2 10 5 18 14 22z"/>
+        <path d="M249 92c-2-16 2-24 8-29 2 12 0 23-8 29z"/>
+        <path d="M251 92c5-9 12-12 18-12-4 8-9 12-18 12z"/>
+      </g>
+      <path d="M238 92h22l-3.5 14h-15z" fill="#b06a3f"/>
+      <rect x="219" y="94" width="13" height="10" rx="2.5" fill="#b06a3f"/>
+    </svg>
+    <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()" aria-label="Bunyi ambient"></button>
   </div>
   <div class="messages" id="messages"></div>
   <div class="input-area">
@@ -1199,6 +1289,77 @@ function toggleTheme() {
   applyTheme();
 }
 
+// ── Therapy scene: character + ambient rain ───────────────
+const AMB_ON_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/><path d="M15 9.5a4 4 0 0 1 0 5"/><path d="M17.6 7a8 8 0 0 1 0 10"/></svg>`;
+const AMB_OFF_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/><line x1="15" y1="9.5" x2="20.5" y2="15"/><line x1="20.5" y1="9.5" x2="15" y2="15"/></svg>`;
+
+function setTherapyChar(mode) {
+  const m = document.getElementById("char-male");
+  const f = document.getElementById("char-female");
+  if (!m || !f) return;
+  m.style.display = mode === "social" ? "none" : "";
+  f.style.display = mode === "social" ? "" : "none";
+}
+
+let ambCtx = null, ambGain = null, ambPlaying = false;
+function ambientPref() { try { return localStorage.getItem("mhsb_ambient") === "1"; } catch(e) { return false; } }
+
+function buildAmbient() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return false;
+  ambCtx = new AC();
+  const len = 2 * ambCtx.sampleRate;
+  const buf = ambCtx.createBuffer(1, len, ambCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + 0.025 * w) / 1.025; d[i] = last * 3.2 + w * 0.12; }
+  const src = ambCtx.createBufferSource(); src.buffer = buf; src.loop = true;
+  const hp = ambCtx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 220;
+  const lp = ambCtx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1400;
+  ambGain = ambCtx.createGain(); ambGain.gain.value = 0;
+  src.connect(hp); hp.connect(lp); lp.connect(ambGain); ambGain.connect(ambCtx.destination);
+  src.start();
+  return true;
+}
+
+function startAmbient() {
+  if (!ambCtx && !buildAmbient()) return;
+  ambCtx.resume().then(() => {
+    if (ambCtx.state !== "running") { ambPlaying = false; updateAmbientBtn(); return; }
+    ambPlaying = true;
+    ambGain.gain.cancelScheduledValues(ambCtx.currentTime);
+    ambGain.gain.setTargetAtTime(0.055, ambCtx.currentTime, 0.5);
+    updateAmbientBtn();
+  }).catch(() => { ambPlaying = false; updateAmbientBtn(); });
+}
+
+function stopAmbient() {
+  if (!ambCtx || !ambPlaying) return;
+  ambPlaying = false;
+  ambGain.gain.cancelScheduledValues(ambCtx.currentTime);
+  ambGain.gain.setTargetAtTime(0, ambCtx.currentTime, 0.3);
+  setTimeout(() => { if (!ambPlaying && ambCtx) ambCtx.suspend(); }, 900);
+  updateAmbientBtn();
+}
+
+function toggleAmbient() {
+  if (ambPlaying) { try { localStorage.setItem("mhsb_ambient", "0"); } catch(e) {} stopAmbient(); }
+  else { try { localStorage.setItem("mhsb_ambient", "1"); } catch(e) {} startAmbient(); }
+}
+
+function updateAmbientBtn() {
+  const b = document.getElementById("ambient-btn");
+  if (!b) return;
+  b.innerHTML = ambPlaying ? AMB_ON_ICON : AMB_OFF_ICON;
+  b.classList.toggle("on", ambPlaying);
+}
+
+function enterTherapyScene(mode) {
+  setTherapyChar(mode);
+  document.getElementById("therapy-scene").classList.remove("collapsed");
+  if (ambientPref()) startAmbient(); else updateAmbientBtn();
+}
+
 function renderStaticAyahList(containerId, data) {
   document.getElementById(containerId).innerHTML = data.map(a => `
     <div class="ayah-card standalone">
@@ -1231,6 +1392,11 @@ function init() {
   renderWiridList();
   initDoaVoice();
   applyTheme();
+  updateAmbientBtn();
+  const chatInput = document.getElementById("user-input");
+  const scene = document.getElementById("therapy-scene");
+  chatInput.addEventListener("focus", () => scene.classList.add("collapsed"));
+  chatInput.addEventListener("blur", () => scene.classList.remove("collapsed"));
   renderStaticAyahList("ayat-tenang-list", AYAT_TENANG);
   renderStaticAyahList("doa-cemas-list", DOA_CEMAS);
   updateStreak();
@@ -1320,6 +1486,7 @@ function showScreen(name) {
     void grid.offsetWidth;
     grid.classList.add("chips-in");
   }
+  if (name !== "chat") stopAmbient();
   if (name === "wirid") openWirid();
   if (name === "doa") openDoa();
   if (name === "home") {
@@ -1351,6 +1518,7 @@ async function startMuhasabah() {
   document.getElementById("messages").innerHTML = "";
   document.getElementById("active-chip").innerHTML = `<span class="chip-icon">${MOOD_ICON[selectedMood]||""}</span>${selectedMood}`;
   showScreen("chat");
+  enterTherapyScene("muhasabah");
 
   const isDirect = selectedMood === "Umum";
   const prompt = `Kau adalah teman muhasabah — bukan ustaz, bukan therapist. Cara kau: tenang, lembut, manusiawi. Guna Bahasa Melayu natural.
@@ -1410,6 +1578,7 @@ async function startSocialChat(situationText) {
   setChatHeader("Cabaran Sosial", "Luah & faham diri");
   document.getElementById("active-chip").innerHTML = `<span class="chip-icon">${SOCIAL_ICON}</span>Sosial`;
   showScreen("chat");
+  enterTherapyScene("social");
   addMessage("user", situationText);
   chatHistory.push({ role:"user", content: situationText });
 
